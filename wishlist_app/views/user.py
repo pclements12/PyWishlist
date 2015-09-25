@@ -33,6 +33,9 @@ def do_search(name):
 def register(request):
     print "Register: %s" % request
     if request.POST:
+        print "Check if user was invited to a group"
+        print "Activation key? %s" % request.session['activation_key']
+        key = request.session['activation_key']
         print "Post Registration form"
         form = UserCreationForm(request.POST)
         print "Creating user..."
@@ -43,9 +46,9 @@ def register(request):
         login(request, auth_user)
         print "Check if user was invited to a group"
         print "Activation key? %s" % request.session['activation_key']
-        if request.session['activation_key'] is not None:
+        if key is not None:
             try:
-                inv = Invite.objects.get(key=request.session['activation_key'])
+                inv = Invite.objects.get(key=key)
                 print "Update user email with invite email %s" % inv.email
                 user.email = inv.email
                 user.save()
@@ -77,12 +80,15 @@ def invite(request):
     print "requesting user belongs to the group %s" % request.user
     inv = Invite.objects.create(email=request.POST['email'], group=group)
     print "Invite created %s" % inv
-    send_invite_email(inv)
+    send_invite_email(request, inv)
     return HttpResponse("Invite sent")
 
 
-def send_invite_email(inv):
-    print "send invite email for %s @ %s" % (inv, generate_invite_link(inv))
+def send_invite_email(request, inv):
+    path = generate_invite_link(inv)
+    print "send invite email for %s @ %s" % (inv, path)
+    url = request.build_absolute_uri(path)
+    print "Absolute url: %s" % url
 
 
 def generate_invite_link(inv):
