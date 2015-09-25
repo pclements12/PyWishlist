@@ -2,9 +2,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from wishlist_app.models import User, WishlistGroup, Invite
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods, require_GET, require_POST
-from django.http import HttpResponse, JsonResponse, Http404
-from django.core import serializers
+from django.views.decorators.http import require_http_methods, require_POST
+from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse

@@ -3,6 +3,12 @@
     <title>Wishlist Items</title>
 {% endblock%}
 
+{% block header %}
+    {% if item %}
+        <h2>{{ item.name }}</h2>
+    {% endif %}
+{% endblock %}
+
 {% block footer %}
     {% if item %}
      <a href="{% url 'group_home' item.group.id %}">Back to Group</a>

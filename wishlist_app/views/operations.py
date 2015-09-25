@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from wishlist_app.models import WishlistGroup
@@ -25,7 +25,8 @@ def do_logout(request):
     logout(request)
     return redirect("wishlists")
 
-@login_required(login_url="login")
+
+@login_required
 def wishlists(request):
     groups = WishlistGroup.get_groups_by_user(request.user)
     print groups

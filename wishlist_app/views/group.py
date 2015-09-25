@@ -2,7 +2,7 @@ from wishlist_app.forms.GroupForm import GroupForm
 from django.shortcuts import render, get_object_or_404, redirect
 from wishlist_app.models import GroupMember, WishlistGroup, Item, User
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods, require_GET, require_POST
+from django.views.decorators.http import require_http_methods, require_POST
 from django.core.exceptions import PermissionDenied
 
 
@@ -15,12 +15,6 @@ def home(request, group_id):
         "group": group,
         "members": GroupMember.objects.filter(group=group)
     }
-    # display two lists:
-    # 1. what you wished for
-    # -option to add a wished item
-    # 2. what you've committed to buy for others
-    # -option to browse wished items
-    # 3. List of wishes grouped by user?
     return render(request, "wishlist_app/group/group_home.html", context)
 
 

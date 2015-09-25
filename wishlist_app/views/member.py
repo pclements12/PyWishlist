@@ -1,9 +1,8 @@
-from wishlist_app.forms.ItemForm import ItemForm
-from django.shortcuts import render, get_object_or_404, redirect
-from wishlist_app.models import WishlistGroup, GroupMember, User
+from django.shortcuts import  get_object_or_404
+from wishlist_app.models import WishlistGroup, User
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods, require_GET, require_POST
+from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
 
 
