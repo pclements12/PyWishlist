@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+import uuid
 
 # Create your models here.
 # Base module
@@ -31,26 +32,28 @@ class WishlistGroup(models.Model):
     description = models.TextField(null=True, blank=True)
     creator = models.ForeignKey(User, related_name="group_creator", default=None)
     end_date = models.DateField(default=None, blank=True, null=True)
+    users = models.ManyToManyField(User, through='GroupMember')
 
     @staticmethod
     def get_groups_by_user(user):
+        # return user.groups
         group_members = GroupMember.objects.filter(user=user)
         group_ids = map(lambda member: member.group.id, group_members)
         return WishlistGroup.objects.filter(id__in=group_ids)
 
-    def users(self):
-        group_members = GroupMember.objects.filter(group=self)
-        user_ids = map(lambda member: member.user.id, group_members)
-        return User.objects.filter(id__in=user_ids)
+    def add_user(self, user):
+        return GroupMember.objects.create(user=user, group=self)
 
     def contains_user(self, user_id):
         print "Check if group contains user:  %s" % user_id
         try:
             user = User.objects.get(pk=user_id)
             print "Found user: %s" % user_id
-            print "Searching group list for user: %s" % self.users()
-            users = filter(lambda u: u == user, self.users())
-            return len(users) > 0
+            print "Searching group list for user: %s" % self.users
+            for u in self.users.all():
+                if u == user:
+                    return True
+            return False
         except User.DoesNotExist:
             return False
 
@@ -93,6 +96,19 @@ class GroupMember(models.Model):
 
     def __str__(self):
         return "%s:%s" % (self.group, self.user)
+
+
+def generate_uuid():
+    return uuid.uuid1()
+
+
+class Invite(models.Model):
+    group = models.ForeignKey(WishlistGroup, related_name="invite_group")
+    key = models.CharField(max_length=64, verbose_name=u"Activation key", default=generate_uuid, null=False)
+    email = models.EmailField(null=False)
+
+    def __str__(self):
+        return "Invite: %s to %s (%s)" % (self.group, self.email, self.key)
 
 
 

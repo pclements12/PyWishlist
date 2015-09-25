@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from wishlist_app.models import User, WishlistGroup
+from wishlist_app.models import User, WishlistGroup, Invite
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
@@ -7,6 +7,7 @@ from django.http import HttpResponse, JsonResponse, Http404
 from django.core import serializers
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
+from django.core.urlresolvers import reverse
 
 
 @login_required
@@ -40,12 +41,54 @@ def register(request):
         auth_user = authenticate(username=user.username, password=request.POST['password2'])
         print "authenticating user..."
         login(request, auth_user)
+        print "Check if user was invited to a group"
+        print "Activation key? %s" % request.session['activation_key']
+        if request.session['activation_key'] is not None:
+            try:
+                inv = Invite.objects.get(key=request.session['activation_key'])
+                print "Update user email with invite email %s" % inv.email
+                user.email = inv.email
+                user.save()
+                inv.group.add_user(user)
+                print "User successfully added to invite group %s" % inv.group
+                inv.delete()
+                del request.session['activation_key']
+                print "invite scrubbed from db, key removed from session"
+            except Invite.DoesNotExist:
+                print "Invalid or already used activation key. User not added to a group"
         return redirect("wishlists")
-    # if request.GET:
+    # GET:
+    print "Checking for activation key %s" % request.GET['activation_key']
+    request.session['activation_key'] = request.GET['activation_key']
     print "Get Registration form"
     form = UserCreationForm()
     print "form created"
     return render(request, 'wishlist_app/register.html', {"form": form})
+
+
+@login_required
+@require_POST
+def invite(request):
+    print "request to invite %s" % request.POST
+    group = get_object_or_404(WishlistGroup, pk=request.POST['group_id'])
+    print "found group %s" % group
+    if not group.contains_user(request.user.id):
+        raise PermissionDenied("Can't invite people to a group if you aren't in it")
+    print "requesting user belongs to the group %s" % request.user
+    inv = Invite.objects.create(email=request.POST['email'], group=group)
+    print "Invite created %s" % inv
+    send_invite_email(inv)
+    return HttpResponse("Invite sent")
+
+
+def send_invite_email(inv):
+    print "send invite email for %s @ %s" % (inv, generate_invite_link(inv))
+
+
+def generate_invite_link(inv):
+    url = "%s?activation_key=%s" % (reverse("register"), inv.key)
+    print "Registration url: %s" % url
+    return url
 
 # json example:
 # from django.forms.models import model_to_dict

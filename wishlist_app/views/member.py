@@ -16,7 +16,7 @@ def add(request, group_id, user_id):
     if group.contains_user(user_id):
         raise ValidationError("User is already a member of this group")
     user = get_object_or_404(User, pk=user_id)
-    GroupMember.objects.create(user=user, group=group)
+    group.add_user(user)
     return HttpResponse()
 
 

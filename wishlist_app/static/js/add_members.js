@@ -15,5 +15,4 @@
         console.log("Found users:", users);
         $("#list").html(users);
     }
-
 });

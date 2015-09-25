@@ -9,20 +9,41 @@
         </ul>
     {% else %}
         <p>No users found</p>
+        Invite by email: <input id="inviteEmail" type="email" placeholder="johndoe@mail.com"/><button id="sendInviteBtn" data-url="{% url 'user_invite'%}">Send Invite</button>
     {% endif%}
 
 </div>
 <script type="text/javascript">
-    $(".addToGroupBtn").click(function(ev){
-        console.log("add", ev);
-        var element = $(ev.target);
-        console.log("element: ", element);
-        $.ajax({
-            method: "post",
-            url: element.data("url"),
-            data: {csrfmiddlewaretoken: window.csrf_token}
-        }).done(function(){
-            element.text("Added").prop("disabled", true);
-        })
-    });
+    registerButtonListeners();
+     $("#inviteEmail").val($("#name").val());
+
+    function registerButtonListeners(){
+        $(".addToGroupBtn").click(function(ev){
+            console.log("add", ev);
+            var element = $(ev.target);
+            console.log("element: ", element);
+            $.ajax({
+                method: "post",
+                url: element.data("url"),
+                data: {csrfmiddlewaretoken: window.csrf_token}
+            }).done(function(){
+                element.text("Added").prop("disabled", true);
+            })
+        });
+
+        $("#sendInviteBtn").click(function(ev){
+            var email = $.trim($("#inviteEmail").val());
+            console.log("invite", ev);
+            var element = $(ev.target);
+            $.ajax({
+                method: "post",
+                url: element.data("url"),
+                data: { csrfmiddlewaretoken: window.csrf_token,
+                        email: email,
+                        group_id: {{group.id}}}
+            }).done(function(){
+                element.text("Invite sent").prop("disabled", true);
+            })
+        });
+    }
 </script>
