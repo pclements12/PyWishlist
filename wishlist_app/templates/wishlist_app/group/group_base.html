@@ -3,14 +3,17 @@
     <title>Wishlist Group</title>
 {% endblock%}
 
+{% block nav %}
+    {% include 'wishlist_app/group/group_nav.html' %}
+{% endblock %}
+
 {% block header %}
     {% if group %}
-        <h2>{{ group.name }}</h2>
     {% endif %}
 {% endblock %}
 
 {% block footer %}
     {% if group %}
-        <a id="backToGroupLink" href="{% url 'group_home' group.id %}">Back to Group</a>
+        <a class="btn btn-block btn-md btn-primary" id="backToGroupLink" href="{% url 'group_home' group.id %}">Back to Group</a>
     {% endif %}
 {% endblock %}

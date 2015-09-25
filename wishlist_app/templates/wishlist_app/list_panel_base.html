@@ -1,0 +1,22 @@
+<div class="panel panel-{% block panel_type %}default{% endblock%}">
+    <div class="panel-heading">
+        {%block panel_title %}{{title}}{% endblock %}
+    </div>
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+        <div class="list-group">
+            {% block panel_list_items %}
+            <a href="#" class="list-group-item">
+                <i class="fa fa-comment fa-fw"></i> New Comment
+                <span class="pull-right text-muted small"><em>4 minutes ago</em>
+                </span>
+            </a>
+            {% endblock %}
+        </div>
+        <!-- /.list-group -->
+        {% block panel_footer %}
+            <!--<a href="#" class="btn btn-default btn-block">View All Alerts</a>-->
+        {% endblock %}
+    </div>
+<!-- /.panel-body -->
+</div>

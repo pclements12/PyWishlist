@@ -1,18 +1,17 @@
-<h4>Group Members</h4>
-<ul>
-    {% for member in members %}
-        <li>
-            {{ member.user.username }}
-            <a href="{% url 'user_wishlist' member.group.id member.user.id %}">View wishes</a>
+ <div class="list-group">
+     {% for member in members %}
+    <a href="{% url 'user_wishlist' member.group.id member.user.id %}" class="list-group-item" title="View wishes">
+        <i class="fa fa-user fa-fw"></i>{{ member.user.username }}
+        <span class="pull-right text-muted small">
+            <em>
             {% if request.user == group.creator %}
                  <form method="POST" action="{% url 'remove_user' member.id %}">
                     {% csrf_token %}
-                    <input type="submit" value="remove"/>
+                    <input class="btn btn-sm" type="submit" value="remove"/>
                  </form>
             {% endif %}
-        </li>
+            </em>
+        </span>
+    </a>
     {% endfor %}
-</ul>
-<p>
-    <a href="{% url 'member_add' group.id %}">Add people to the group</a>
-</p>
+</div>

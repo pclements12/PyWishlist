@@ -3,49 +3,75 @@
     <title>{{ group.name }} | Wishlist</title>
 {% endblock %}
 {% block body %}
-    {% if group %}
-        <p>{{ group.description }}</p>
-    {% endif %}
-    {% if request.user == group.creator %}
-        <a href="{% url 'group_update' group.id%}">Edit Group</a>
-        <form method="POST" action="{% url 'group_delete' group.id %}">
-            {% csrf_token %}
-            <input type="submit" value="Delete" disabled/>
-        </form>
-    {% endif %}
-    <h4>What I want</h4>
-    {% if wishes %}
-        <ul>
-            {% for item in wishes %}
-                <li>
-                    <a href="{% url 'item_read' item.id %}/">{{ item.name }} {% if item.quantity > 1 %}({{ item.quantity }}) {% endif %}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>You haven't made any wishes yet</p>
-    {% endif %}
-    <a href="{% url 'item_create' group.id %}">Make a wish</a>
-    <h4>What I'm getting for others</h4>
-    {% if gives %}
-        <ul>
-            {% for item in gives %}
-                <li>
-                    <a href="{% url 'item_read' item.id %}">{{ item.name }}</a>
-                    for <a href="{% url 'user_wishlist' group.id item.wisher.id %}">{{ item.wisher.username }}</a>
-                    <a href="{% url 'item_unclaim' item.id %}">unclaim</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No wishes granted yet</p>
-    {% endif %}
-    {% include 'wishlist_app/group/wishlist_members.html' %}
-    <p>
-        <a href="{% url 'wishlists' %}">My Groups</a>
-    </p>
+    <div>
+        <div class="row">
+            <div class="col-lg-12">
+            {% if group %}
+                <div class="panel panel-primary">
+                    <div class="panel-heading">{{group.name}}</div>
+                    <div class="panel-body">
+                        <h5>{{group.description}}</h5>
+                    </div>
+                    {% if request.user == group.creator %}
+                        <div class="panel-footer">
+                            <a class="btn btn-lg btn-info btn-block" href="{% url 'group_update' group.id%}">Edit Group</a>
+                            <form method="POST" action="{% url 'group_delete' group.id %}">
+                                {% csrf_token %}
+                                <input class="btn btn-lg btn-warn btn-block" type="submit" value="Delete" disabled/>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            </div>
+
+            <div class="col-lg-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <i class="fa fa-users fa-fw"></i> What I want
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                         {% include 'wishlist_app/item/list.html' with items=wishes %}
+                    </div>
+
+                    <div class="panel-footer">
+                        <a class="btn btn-lg btn-success btn-block" href="{% url 'item_create' group.id %}">Make a wish</a>
+                    </div>
+                </div>
+            </div>
+
+             <div class="col-lg-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <i class="fa fa-users fa-fw"></i> What I'm giving
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                         {% include 'wishlist_app/item/list.html' with items=gives %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <i class="fa fa-users fa-fw"></i> Group Members
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        {% include 'wishlist_app/group/wishlist_members.html' %}
+                    </div>
+
+                    <div class="panel-footer">
+                        <a class="btn btn-lg btn-primary btn-block" href="{% url 'member_add' group.id %}">Add people to the group</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block footer %}
-
+<!--no back to group link on the group main page-->
 {% endblock %}

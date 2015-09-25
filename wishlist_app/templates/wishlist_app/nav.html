@@ -1,0 +1,46 @@
+<nav class="navbar navbar-default navbar-static-top active" role="navigation" style="margin-bottom: 0">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        {% block nav_title %}
+            <a class="navbar-brand" href="{% url 'wishlists' %}">Wishlists</a>
+        {% endblock %}
+    </div>
+    <!-- /.navbar-header -->
+
+    <div class="navbar-default sidebar" role="navigation">
+        <div class="sidebar-nav navbar-collapse active">
+            <ul class="nav in" id="side-menu">
+                {% if request.user.is_authenticated %}
+                    <li>
+                        <a href="#" class="active"><i class="fa fa-user fa-fw"></i> {{ request.user.username }}</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="{% url 'wishlists' %}"><i class="fa fa-users fa-fw"></i> My Groups</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="{% url 'logout' %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{% url 'login' %}"><i class="fa fa-sign-in fa-fw"></i> Login</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'register' %}"><i class="fa fa-sign-in fa-fw"> Sign up</a>
+                    </li>
+                {% endif %}
+                <li>
+                    <a href="{% url 'login' %}"><i class="fa fa-sign-in fa-fw"></i> Login</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.sidebar-collapse -->
+    </div>
+    <!-- /.navbar-static-side -->
+</nav>

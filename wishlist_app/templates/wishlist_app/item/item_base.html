@@ -11,6 +11,6 @@
 
 {% block footer %}
     {% if item %}
-     <a href="{% url 'group_home' item.group.id %}">Back to Group</a>
+     <a class="btn btn-blk btn-md btn-primary" href="{% url 'group_home' item.group.id %}">Back to Group</a>
     {% endif %}
 {% endblock %}
