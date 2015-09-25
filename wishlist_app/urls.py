@@ -15,10 +15,10 @@ urlpatterns = [
     url(r'^group/(?P<group_id>[0-9]+)/delete/?$', group.delete, name="group_delete"),
 
     # group member operations
-    url(r'^(?P<group_id>[0-9]+)/user/$', group.wishlist_members, name="wishlist_members"),
     url(r'^(?P<group_id>[0-9]+)/user/(?P<wisher_id>[0-9]+)/$', group.user_wishlist, name="user_wishlist"),
     url(r'^group/(?P<group_id>[0-9]+)/add$', group.add_members, name="member_add"),
     url(r'^group/(?P<group_id>[0-9]+)/add/(?P<user_id>[0-9]+)$', member.add, name="add_user"),
+    url(r'^group/member/remove/(?P<member_id>[0-9]+)$', member.delete, name="remove_user"),
 
     # wishlist item operations
     url(r'^(?P<group_id>[0-9]+)/item/$', item.create, name="item_create"),

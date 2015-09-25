@@ -1,19 +1,18 @@
-{% extends 'wishlist_app/base.html' %}
-{% block title %}
-    <title>{{ group.name }} | Wishlist Members</title>
-{% endblock%}
-{% block body %}
-    <h4>Group Members</h4>
-    {% if group_members %}
-        <ul>
-            {% for user in members %}
-                {% if user == request.user %}
-                <li>{{ user.username }}</li>
-                {% else %}
-                <li>
-                <a href="{% url 'user_wishlist' wishlist.id user.id %}">{{ user.username }}</a></li>
-                {% endif%}
-            {% endfor %}
-        </ul>
-    {% endif %}
-{% endblock %}
+<h4>Group Members</h4>
+<ul>
+    {% for member in members %}
+        <li>
+            {{ member.user.username }}
+            <a href="{% url 'user_wishlist' member.group.id member.user.id %}">View wishes</a>
+            {% if request.user == group.creator %}
+                 <form method="POST" action="{% url 'remove_user' member.id %}">
+                    {% csrf_token %}
+                    <input type="submit" value="remove"/>
+                 </form>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+<p>
+    <a href="{% url 'member_add' group.id %}">Add people to the group</a>
+</p>

@@ -9,11 +9,13 @@ from django.core.exceptions import PermissionDenied
 @login_required(login_url="login")
 def home(request, group_id):
     group = get_object_or_404(WishlistGroup, pk=group_id)
+    if not group.contains_user(request.user):
+        return redirect("wishlists")
     context = {
-        "wishes": Item.objects.filter(group=group, wisher=request.user),
-        "gives": Item.objects.filter(group=group, giver=request.user),
+        "wishes": Item.objects.filter(group=group, wisher=request.user).order_by("name"),
+        "gives": Item.objects.filter(group=group, giver=request.user).order_by("name"),
         "group": group,
-        "members": GroupMember.objects.filter(group=group)
+        "members": group.members()
     }
     return render(request, "wishlist_app/group/group_home.html", context)
 
@@ -88,17 +90,6 @@ def delete(request, group_id):
     group.delete()
     print "Successfully deleted group"
     return redirect("wishlists")
-
-
-@login_required
-def wishlist_members(request, group_id):
-    group = get_object_or_404(WishlistGroup, pk=group_id)
-    users = group.users()
-    return render(request, "wishlist_app/group/wishlist_members.html", {
-        "members": users,
-        "group": group
-    })
-
 
 @login_required
 def user_wishlist(request, group_id, wisher_id):

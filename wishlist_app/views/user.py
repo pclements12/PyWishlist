@@ -33,9 +33,10 @@ def register(request):
     print "Register: %s" % request
     if request.POST:
         print "Check if user was invited to a group"
-        print "Activation key? %s" % request.session['activation_key']
-        key = request.session['activation_key']
-        print "Post Registration form"
+        key = None
+        if 'activation_key' in request.session:
+            key = request.session['activation_key']
+            print "Session activation key? %s" % key
         form = UserCreationForm(request.POST)
         print "Creating user..."
         user = form.save()
@@ -44,9 +45,9 @@ def register(request):
         print "authenticating user..."
         login(request, auth_user)
         print "Check if user was invited to a group"
-        print "Activation key? %s" % request.session['activation_key']
         if key is not None:
             try:
+                print "Activation key? %s" % key
                 inv = Invite.objects.get(key=key)
                 print "Update user email with invite email %s" % inv.email
                 user.email = inv.email
@@ -58,10 +59,13 @@ def register(request):
                 print "invite scrubbed from db, key removed from session"
             except Invite.DoesNotExist:
                 print "Invalid or already used activation key. User not added to a group"
+        else:
+            print "no invite for the user"
         return redirect("wishlists")
     # GET:
     print "Checking for activation key %s" % request.GET['activation_key']
-    request.session['activation_key'] = request.GET['activation_key']
+    if 'activation_key' in request.GET:
+        request.session['activation_key'] = request.GET['activation_key']
     print "Get Registration form"
     form = UserCreationForm()
     print "form created"
@@ -74,7 +78,7 @@ def invite(request):
     print "request to invite %s" % request.POST
     group = get_object_or_404(WishlistGroup, pk=request.POST['group_id'])
     print "found group %s" % group
-    if not group.contains_user(request.user.id):
+    if not group.contains_user(request.user):
         raise PermissionDenied("Can't invite people to a group if you aren't in it")
     print "requesting user belongs to the group %s" % request.user
     inv = Invite.objects.create(email=request.POST['email'], group=group)

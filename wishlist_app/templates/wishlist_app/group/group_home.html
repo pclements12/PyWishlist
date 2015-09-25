@@ -40,20 +40,7 @@
     {% else %}
         <p>No wishes granted yet</p>
     {% endif %}
-    <p>
-        <a href="{% url 'wishlist_members' group.id %}">See what everyone wants</a>
-    </p>
-    <h4>Group Members</h4>
-    <ul>
-        {% for member in members %}
-            <li>
-                <a href="{% url 'user_wishlist' member.group.id member.user.id %}">{{ member.user.username }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-    <p>
-        <a href="{% url 'member_add' group.id %}">Add people to the group</a>
-    </p>
+    {% include 'wishlist_app/group/wishlist_members.html' %}
     <p>
         <a href="{% url 'wishlists' %}">My Groups</a>
     </p>

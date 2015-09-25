@@ -41,21 +41,33 @@ class WishlistGroup(models.Model):
         group_ids = map(lambda member: member.group.id, group_members)
         return WishlistGroup.objects.filter(id__in=group_ids)
 
+    def members(self):
+        return GroupMember.objects.filter(group=self).order_by("user__username")
+
     def add_user(self, user):
         return GroupMember.objects.create(user=user, group=self)
 
-    def contains_user(self, user_id):
-        print "Check if group contains user:  %s" % user_id
-        try:
-            user = User.objects.get(pk=user_id)
-            print "Found user: %s" % user_id
-            print "Searching group list for user: %s" % self.users
-            for u in self.users.all():
-                if u == user:
-                    return True
-            return False
-        except User.DoesNotExist:
-            return False
+    def remove_user(self, user):
+        print "removing user from group %s" % user
+        GroupMember.objects.get(user=user, group=self).delete()
+        items = Item.objects.filter(wisher=user, group=self)
+        print "deleting user's items from the group"
+        for i in items:
+            print "delete item %s" % i
+            i.delete()
+        print "unclaim items for user"
+        items = Item.objects.filter(giver=user)
+        for i in items:
+            print "unclaiming item %s" % i
+            i.unclaim()
+
+    def contains_user(self, user):
+        print "Check if group contains user:  %s" % user
+        print "Searching group list for user: %s" % self.members()
+        for member in self.members():
+            if member.user == user:
+                return True
+        return False
 
     def __str__(self):
         return self.name
