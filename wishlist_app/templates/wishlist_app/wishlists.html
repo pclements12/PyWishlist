@@ -1,0 +1,18 @@
+{% extends 'wishlist_app/base.html' %}
+{% block title %}
+    <title>My Wishlists</title>
+{% endblock%}
+{% block body %}
+    {% if wishlists %}
+        <ul>
+            {% for group in wishlists %}
+                <li><a href="{% url 'group_home' group.id %}">{{ group.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You don't have any wishlist groups! Go create one!</p>
+    {% endif %}
+    <p>
+        <a href="{% url 'group_create' %}">Create a new Group</a>
+    </p>
+{% endblock %}

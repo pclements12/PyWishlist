@@ -1,0 +1,8 @@
+<ul>
+    {% for item in items %}
+        <li>
+            <a href="/wishlist/item/{{ item.id }}/">{{ item.name }}</a>
+            <a href="/wishlist/user/{{ item.wisher.id }}/">{{ item.wisher.name }}</a>
+        </li>
+    {% endfor %}
+</ul>

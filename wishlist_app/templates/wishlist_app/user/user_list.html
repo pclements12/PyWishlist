@@ -1,0 +1,28 @@
+<div>
+    {% if users %}
+        <ul>
+            {% for user in users %}
+                <li>
+                    {{user.username}} <button class="addToGroupBtn" data-url="{% url 'add_user' group.id user.id %}">Add to Group</button>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No users found</p>
+    {% endif%}
+
+</div>
+<script type="text/javascript">
+    $(".addToGroupBtn").click(function(ev){
+        console.log("add", ev);
+        var element = $(ev.target);
+        console.log("element: ", element);
+        $.ajax({
+            method: "post",
+            url: element.data("url"),
+            data: {csrfmiddlewaretoken: window.csrf_token}
+        }).done(function(){
+            element.text("Added").prop("disabled", true);
+        })
+    });
+</script>

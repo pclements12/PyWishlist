@@ -1,0 +1,18 @@
+{% extends 'wishlist_app/base.html' %}
+{% block title %}
+    <title>Register to use Wishlists</title>
+{% endblock %}
+
+{% block login_header %}
+{% endblock%}
+
+{% block body %}
+    <h4>Sign up</h4>
+    <form method="post" action="{% url 'register' %}">
+    {% csrf_token %}
+    <table>
+    {{form}}
+    </table>
+    <input type="submit" value="Create account"/>
+    </form>
+{% endblock %}

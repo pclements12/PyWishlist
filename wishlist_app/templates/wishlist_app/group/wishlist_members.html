@@ -1,0 +1,19 @@
+{% extends 'wishlist_app/base.html' %}
+{% block title %}
+    <title>{{ group.name }} | Wishlist Members</title>
+{% endblock%}
+{% block body %}
+    <h4>Group Members</h4>
+    {% if group_members %}
+        <ul>
+            {% for user in members %}
+                {% if user == request.user %}
+                <li>{{ user.username }}</li>
+                {% else %}
+                <li>
+                <a href="{% url 'user_wishlist' wishlist.id user.id %}">{{ user.username }}</a></li>
+                {% endif%}
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

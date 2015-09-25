@@ -1,0 +1,16 @@
+{% extends 'wishlist_app/base.html' %}
+{% block title %}    
+    <title>Wishlist Group</title>
+{% endblock%}
+
+{% block header %}
+    {% if group %}
+        <h2>{{ group.name }}</h2>
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+    {% if group %}
+        <a id="backToGroupLink" href="{% url 'group_home' group.id %}">Back to Group</a>
+    {% endif %}
+{% endblock %}

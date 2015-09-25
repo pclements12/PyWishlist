@@ -1,0 +1,14 @@
+{% extends 'wishlist_app/item/item_base.html' %}
+{% block title %}
+    <title>{{ item.name }}</title>
+{% endblock%}
+{% block body %}
+    <h4>New item for my wishlist</h4>
+    <form method="post" action="{% url 'item_create' group.id %}">
+    {% csrf_token %}
+    <table>
+    {{item_form}}
+    </table>
+    <input type="submit" value="Save"/>
+    </form>
+{% endblock %}

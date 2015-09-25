@@ -1,0 +1,32 @@
+{% extends 'wishlist_app/item/item_base.html' %}
+{% block title %}
+    <title>{{ item.name }}</title>
+{% endblock%}
+{% block body %}
+    <span>
+        {% include 'wishlist_app/item/item_claim.html' %}
+    </span>
+    <div>
+        Wisher: {{item.wisher.username}}
+    </div>
+    <div>
+        Name: {{item.name}}
+    </div>
+    <div>
+        Description: {{item.description}}
+    </div>
+    <div>
+        Link: <a target="_blank" href="{{item.link}}">{{ item.link }}</a>
+    </div>
+    <div>
+        Quantity:{{item.quantity}}
+    </div>
+
+     {% if request.user == item.wisher %}
+        <a href="{% url 'item_update' item.id %}">Edit</a>
+        <form method="POST" action="{% url 'item_delete' item.id %}">
+            {% csrf_token %}
+            <input type="submit" value="Delete"/>
+        </form>
+    {% endif %}
+{% endblock %}

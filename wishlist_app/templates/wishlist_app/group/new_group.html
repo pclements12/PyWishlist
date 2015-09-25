@@ -1,0 +1,14 @@
+{% extends 'wishlist_app/group/group_base.html' %}
+{% block title %}
+    <title>{{ group.name }}</title>
+{% endblock%}
+{% block body %}
+   <h4>Create a new wishlist group</h4>
+    <form method="post" action="{% url 'group_create' %}">
+    {% csrf_token %}
+    <table>
+    {{group_form}}
+    </table>
+    <input type="submit" value="Save"/>
+    </form>
+{% endblock %}

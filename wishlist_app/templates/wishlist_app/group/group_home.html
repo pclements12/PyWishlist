@@ -1,0 +1,64 @@
+{% extends 'wishlist_app/group/group_base.html' %}
+{% block title %}
+    <title>{{ group.name }} | Wishlist</title>
+{% endblock %}
+{% block body %}
+    {% if group %}
+        <p>{{ group.description }}</p>
+    {% endif %}
+    {% if request.user == group.creator %}
+        <a href="{% url 'group_update' group.id%}">Edit Group</a>
+        <form method="POST" action="{% url 'group_delete' group.id %}">
+            {% csrf_token %}
+            <input type="submit" value="Delete" disabled/>
+        </form>
+    {% endif %}
+    <h4>What I want</h4>
+    {% if wishes %}
+        <ul>
+            {% for item in wishes %}
+                <li>
+                    <a href="{% url 'item_read' item.id %}/">{{ item.name }} {% if item.quantity > 1 %}({{ item.quantity }}) {% endif %}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't made any wishes yet</p>
+    {% endif %}
+    <a href="{% url 'item_create' group.id %}">Make a wish</a>
+    <h4>What I'm getting for others</h4>
+    {% if gives %}
+        <ul>
+            {% for item in gives %}
+                <li>
+                    <a href="{% url 'item_read' item.id %}/">{{ item.name }}</a>
+                    for <a href="{% url 'user_wishlist' group.id item.wisher.id %}/">{{ item.wisher.username }}</a>
+                    <a href="{% url 'item_unclaim' item.id %}">unclaim</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No wishes granted yet</p>
+    {% endif %}
+    <p>
+        <a href="{% url 'wishlist_members' group.id %}">See what everyone wants</a>
+    </p>
+    <h4>Group Members</h4>
+    <ul>
+        {% for member in members %}
+            <li>
+                <a href="{% url 'user_wishlist' member.group.id member.user.id %}">{{ member.user.username }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <p>
+        <a href="{% url 'member_add' group.id %}">Add people to the group</a>
+    </p>
+    <p>
+        <a href="{% url 'wishlists' %}">My Groups</a>
+    </p>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

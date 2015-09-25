@@ -1,0 +1,25 @@
+{% extends 'wishlist_app/group/group_base.html' %}
+
+{% block scripts %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'js/add_members.js' %}"></script>
+
+    <script type="text/javascript">
+        window.user_search_url = "{% url 'user_search' group.id %}";
+    </script>
+{% endblock %}
+
+
+{% block title %}
+    <title>Add members to group</title>
+{% endblock %}
+
+{% block body %}
+    Search for members to add
+        <p>Search for a user by username or email</p>
+        {% csrf_token %}
+        <input id="name" type="text" name="name"/>
+        <button id="searchBtn">Search</button>
+        <div id="list"></div>
+{% endblock %}
+

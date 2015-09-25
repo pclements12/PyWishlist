@@ -1,0 +1,12 @@
+{% if request.user != item.wisher %}
+    {% if item.claimed %}
+        {% if item.giver == request.user %}
+            <span>Claimed by you!</span>
+            <a href="{% url 'item_unclaim' item.id %}">unclaim</a>
+        {% else %}
+            <span>Claimed by {{ item.giver.username }}</span>
+        {% endif %}
+    {% else %}
+        <a href="{% url 'item_claim' item.id %}">claim</a>
+    {% endif %}
+{% endif %}
