@@ -12,7 +12,11 @@
             <span class="icon-bar"></span>
         </button>
         {% block nav_title %}
-            <a class="navbar-brand" href="{% url 'group_home' group.id %}">Wishlist - {{ group.name }}</a>
+            {% if group %}
+                <a class="navbar-brand" href="{% url 'group_home' group.id %}">Wishlist - {{ group.name }}</a>
+            {% else %}
+                <a class="navbar-brand" href="#">Wishlist</a>
+            {% endif %}
         {% endblock %}
     </div>
     <!-- /.navbar-header -->

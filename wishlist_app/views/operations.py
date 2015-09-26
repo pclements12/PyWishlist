@@ -8,13 +8,17 @@ from django.contrib.auth.decorators import login_required
 
 def request_login(request):
     if request.POST:
+        print "attempting login"
         username = request.POST['username']
         password = request.POST['password']
+        print "authenticating %s" % username
         user = authenticate(username=username, password=password)
         if user is not None:
+            print "processing logging in"
             login(request, user)
             return redirect("wishlists")
         else:
+            print "couldn't authenticate"
             return HttpResponse('Unauthorized', status=401)
     else:
         form = AuthenticationForm()
