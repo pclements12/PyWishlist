@@ -63,8 +63,9 @@ def register(request):
             print "no invite for the user"
         return redirect("wishlists")
     # GET:
-    print "Checking for activation key %s" % request.GET['activation_key']
+    print "Checking for activation key"
     if 'activation_key' in request.GET:
+        print "activation key provided: %s" % request.GET['activation_key']
         request.session['activation_key'] = request.GET['activation_key']
     print "Get Registration form"
     form = UserCreationForm()
