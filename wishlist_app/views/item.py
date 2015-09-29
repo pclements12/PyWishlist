@@ -28,48 +28,6 @@ def create(request, group_id):
                       {'item_form': item_form,
                        "group": group})
 
-# >> user = User.objects.create()
-# >> user.username = "patrick"
-# >> user.save()
-
-# >> group = WishlistGroup.objects.create()
-# >> group.name = "Patrick's Group"
-# >> group.save()
-
-# >> item = Item.objects.create()
-# >> item.name = "Soccer ball"
-# >> item.description = "size 5"
-# >> item.link = "http://lmgtfy.com?q=size+5+soccer+ball"
-# >> item.wisher = user
-# >> item.group = group
-# >> item.save()
-
-
-def do_read(request, item_id):
-    item = Item.objects.get(id=item_id)
-    # pass request, template name, and template context to the render method
-    return render(request, "wishlist_app/item/test.html", {"item": item})
-
-# handles both GET to receive the form and POST to update the model
-@login_required
-def do_update(request, item_id):
-    item = get_object_or_404(Item, pk=item_id)
-    print "Update item: %s" % item
-    if request.POST:
-        print "posted values %s" % request.POST
-        item.name = request.POST['name']
-        item.description = request.POST['description']
-        item.link = request.POST['link']
-        item.quantity = request.POST['quantity']
-        item.save()
-        print "update item %s" % item
-        return redirect("do_item_read", item.id)
-    else:
-        # on GET, serve up our Item Form
-        item_form = ItemForm(instance=item)
-        return render(request, 'wishlist_app/item/update_item.html',
-                        {'item_form': item_form, 'item': item})
-
 
 @login_required
 @require_GET
