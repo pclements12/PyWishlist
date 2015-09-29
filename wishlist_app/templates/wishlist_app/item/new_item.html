@@ -5,10 +5,13 @@
 {% block body %}
     <h4>New item for my wishlist</h4>
     <form method="post" action="{% url 'item_create' group.id %}">
-    {% csrf_token %}
-    <table>
-    {{item_form}}
-    </table>
-    <input type="submit" value="Save"/>
+        {% csrf_token %}
+        {% load bootstrap3 %}
+        {% bootstrap_form item_form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+              <i class="fa fa-gift"></i> Save
+            </button>
+        {% endbuttons %}
     </form>
 {% endblock %}

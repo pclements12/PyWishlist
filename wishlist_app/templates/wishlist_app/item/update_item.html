@@ -1,14 +1,18 @@
-{% extends 'wishlist_app/item/item_base.html' %}
+{% extends 'wishlist_app/group/group_base.html' %}
 {% block title %}
     <title>{{ item.name }}</title>
 {% endblock%}
 {% block body %}
       <h4>Update item</h4>
     <form method="post" action="{% url 'item_update' item.id %}">
-    {% csrf_token %}
-    <table>
-    {{item_form}}
-    </table>
-    <input type="submit" value="Save"/>
+        {% csrf_token %}
+        {% load bootstrap3 %}
+        {% bootstrap_form item_form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+              <i class="fa fa-gift"></i> Save
+            </button>
+        {% endbuttons %}
+        {% csrf_token %}
     </form>
 {% endblock %}

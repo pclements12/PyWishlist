@@ -3,16 +3,30 @@
     <title>My Wishlists</title>
 {% endblock%}
 {% block body %}
-    {% if wishlists %}
-        <ul>
-            {% for group in wishlists %}
-                <li><a href="{% url 'group_home' group.id %}">{{ group.name }}</a></li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>You don't have any wishlist groups! Go create one!</p>
-    {% endif %}
-    <p>
-        <a href="{% url 'group_create' %}">Create a new Group</a>
-    </p>
+     <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">My Groups</div>
+                <div class="panel-body">
+                    <div class="list-group">
+                    {% if wishlists %}
+                        {% for group in wishlists %}
+                        <a href="{% url 'group_home' group.id %}" class="list-group-item">
+                            <i class="fa fa-users fa-fw"></i> {{ group.name }}
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                         <a href="#" class="list-group-item">
+                             <i class="fa fa-frown-o fa-fw"></i> No groups
+                         </a>
+                    {% endif %}
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <a class="btn btn-lg btn-primary btn-block" href="{% url 'group_create' %}">
+                        <i class="fa fa-plus-circle"></i> Create new group</a>
+                </div>
+            </div>
+        </div>
+     </div>
 {% endblock %}

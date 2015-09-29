@@ -14,17 +14,23 @@
     {% endblock %}
 
     {% load staticfiles %}
+    {# Load bootstrap3 tag library #}
+    {% load bootstrap3 %}
     <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="{% static 'bootstrap/bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
+    {% bootstrap_css %}
+
+    <!--custom css-->
+    <link rel="stylesheet" href="{% static 'css/wishlist.css' %}"/>
+
 
     <!-- MetisMenu CSS -->
-    <link rel="stylesheet" href="{% static 'bootstrap/bower_components/metisMenu/dist/metisMenu.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'bootstrap/metisMenu.min.css' %}"/>
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'bootstrap/dist/css/sb-admin-2.css' %}"/>
+    <link rel="stylesheet" href="{% static 'bootstrap/sb-admin-2.css' %}"/>
 
     <!-- Custom Fonts -->
-    <link rel="stylesheet" href="{% static 'bootstrap/bower_components/font-awesome/css/font-awesome.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'bootstrap/font-awesome.min.css' %}"/>
 
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -51,12 +57,15 @@
     {% endblock %}
 
      <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'bootstrap/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    {# Load CSS and JavaScript #}
+    {% bootstrap_javascript %}
 
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="{% static 'bootstrap/bower_components/metisMenu/dist/metisMenu.min.js' %}"></script>
+    <script src="{% static 'bootstrap/metisMenu.min.js' %}"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="{% static 'bootstrap/dist/js/sb-admin-2.js' %}"></script>
+    <script src="{% static 'bootstrap/sb-admin-2.js' %}"></script>
 </body>
 </html>

@@ -9,10 +9,13 @@
 {% block body %}
     <h4>Sign up</h4>
     <form method="post" action="{% url 'register' %}">
-    {% csrf_token %}
-    <table>
-    {{form}}
-    </table>
-    <input type="submit" value="Create account"/>
+        {% csrf_token %}
+        {% load bootstrap3 %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+              Create Account <i class="fa fa-sign-in"></i>
+            </button>
+        {% endbuttons %}
     </form>
 {% endblock %}

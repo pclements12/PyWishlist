@@ -1,32 +1,41 @@
-{% extends 'wishlist_app/item/item_base.html' %}
+{% extends 'wishlist_app/group/group_base.html' %}
 {% block title %}
     <title>{{ item.name }}</title>
 {% endblock%}
 {% block body %}
-    <span>
-        {% include 'wishlist_app/item/item_claim.html' %}
-    </span>
-    <div>
-        Wisher: {{item.wisher.username}}
-    </div>
-    <div>
-        Name: {{item.name}}
-    </div>
-    <div>
-        Description: {{item.description}}
-    </div>
-    <div>
-        Link: <a target="_blank" href="{{item.link}}">{{ item.link }}</a>
-    </div>
-    <div>
-        Quantity:{{item.quantity}}
-    </div>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                {{ item.name }} for {{ item.wisher.username }}
+                    {% if request.user == item.wisher %}
+                        <a class="pull-right inverse" href="{% url 'item_update' item.id %}"><i class="fa fa-edit"></i> Edit</a>
+                    {% endif %}
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
 
-     {% if request.user == item.wisher %}
-        <a href="{% url 'item_update' item.id %}">Edit</a>
-        <form method="POST" action="{% url 'item_delete' item.id %}">
-            {% csrf_token %}
-            <input type="submit" value="Delete"/>
-        </form>
-    {% endif %}
+                <div class="list-group">
+                    <li class="list-group-item">
+                       <i class="fa fa-list"></i> Description: {{ item.description }}
+                    </li>
+                    {% if item.link %}
+                    <a class="list-group-item" target="_blank" href="{{item.link}}">
+                       <i class="fa fa-link"></i> {{ item.link }}
+                    </a>
+                    {% endif %}
+                    <li class="list-group-item">
+                       Wanted: {{ item.quantity }}
+                    </li>
+                    {% if request.user == item.wisher %}
+                        <li class="list-group-item">
+                            <form method="POST" action="{% url 'item_delete' item.id %}">
+                                {% csrf_token %}
+                                <input class="form-control" type="submit" value="Delete"/>
+                            </form>
+                        </li>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
