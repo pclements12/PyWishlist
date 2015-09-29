@@ -31,8 +31,4 @@ urlpatterns = [
     # user
     url(r'^user/search/(?P<group_id>[0-9]+)$', user.search, name="user_search"),
     url(r'^user/invite', user.invite, name="user_invite"),
-
-    ######testing
-    url(r'^item/(?P<item_id>[0-9]+)/test/?$', item.do_read, name="do_item_read"),
-    url(r'^item/(?P<item_id>[0-9]+)/edit/test/?$', item.do_update, name="do_item_update"),
 ]
