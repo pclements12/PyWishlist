@@ -1,18 +1,31 @@
-<div>
-    {% if users %}
-        <ul>
-            {% for user in users %}
-                <li>
-                    {{user.username}} <button class="addToGroupBtn" data-url="{% url 'add_user' group.id user.id %}">Add to Group</button>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No users found</p>
-        Invite by email: <input id="inviteEmail" type="email" placeholder="johndoe@mail.com"/><button id="sendInviteBtn" data-url="{% url 'user_invite'%}">Send Invite</button>
-    {% endif%}
-
+ <div class="col-lg-12">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <i class="fa fa-users fa-fw"></i> Search Results
+        </div>
+        <div class="panel-body">
+            {% if users %}
+                {% for user in users %}
+                    <button class="list-group-item addToGroupBtn" data-url="{% url 'add_user' group.id user.id %}">
+                        <i class="fa fa-plus-circle"></i> {{user.username}}
+                    </button>
+                {% endfor %}
+            {% else %}
+            <div>
+                <div class="alert alert-danger" role="alert">No users found</div>
+                <h4>Invite to join by email:</h4>
+                <input class="form-control" id="inviteEmail" type="email" placeholder="johndoe@mail.com"/>
+            </div>
+            {% endif %}
+        </div>
+        {% if not users %}
+         <div class="panel-footer">
+                <button class="btn btn-primary" id="sendInviteBtn" data-url="{% url 'user_invite'%}"><i class="fa fa-envelope-o"></i> Send Invite</button>
+            </div>
+        {% endif%}
+    </div>
 </div>
+
 <script type="text/javascript">
     registerButtonListeners();
      $("#inviteEmail").val($("#name").val());
@@ -27,7 +40,10 @@
                 url: element.data("url"),
                 data: {csrfmiddlewaretoken: window.csrf_token}
             }).done(function(){
-                element.text("Added").prop("disabled", true);
+                element.html("<i class='fa fa-check-circle'></i> Added").prop("disabled", true);
+            }).fail(function(response){
+                console.log("error adding user to group", response);
+                element.html("<i class='fa fa-error'></i> Error: "+response.responseText.substring(0, 100) + "...")
             })
         });
 

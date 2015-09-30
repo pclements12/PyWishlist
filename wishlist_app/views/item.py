@@ -53,6 +53,10 @@ def update(request, item_id):
         item.description = request.POST['description']
         item.link = request.POST['link']
         item.quantity = request.POST['quantity']
+        print "update item quantity %s" % item.quantity
+        if int(item.quantity) < 1:
+            print "item quantity less than 1, defaulting to 1"
+            item.quantity = 1
         item.save()
         print "update item %s" % item
         return redirect("group_home", item.group.id)

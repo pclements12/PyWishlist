@@ -13,6 +13,6 @@
 
     function displayUsers(users){
         console.log("Found users:", users);
-        $("#list").html(users);
+        $("#user-list").html(users);
     }
 });

@@ -17,6 +17,7 @@ def search(request, group_id=None):
     return render(request, "wishlist_app/user/user_list.html", {"users": users, "group": group})
 
 
+# helper for search in case we need it outside a form post
 def do_search(name):
     print "search: %s" % name
     print "searching for user by email..."
@@ -55,7 +56,8 @@ def register(request):
                 inv.group.add_user(user)
                 print "User successfully added to invite group %s" % inv.group
                 inv.delete()
-                del request.session['activation_key']
+                if 'activation_key' in request.session:
+                    del request.session['activation_key']
                 print "invite scrubbed from db, key removed from session"
             except Invite.DoesNotExist:
                 print "Invalid or already used activation key. User not added to a group"

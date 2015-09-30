@@ -1,3 +1,11 @@
 .inverse{
     color: #FFF
 }
+
+form.delete a{
+    cursor: pointer
+}
+
+form.delete a:hover{
+    color: red
+}

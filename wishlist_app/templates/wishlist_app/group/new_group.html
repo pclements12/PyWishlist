@@ -5,10 +5,13 @@
 {% block body %}
    <h4>Create a new wishlist group</h4>
     <form method="post" action="{% url 'group_create' %}">
-    {% csrf_token %}
-    <table>
-    {{group_form}}
-    </table>
-    <input type="submit" value="Save"/>
+        {% csrf_token %}
+        {% load bootstrap3 %}
+        {% bootstrap_form group_form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+              <i class="fa fa-plus-circle"></i> Save
+            </button>
+        {% endbuttons %}
     </form>
 {% endblock %}

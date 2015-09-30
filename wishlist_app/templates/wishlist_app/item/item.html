@@ -7,32 +7,30 @@
         <div class="panel panel-primary">
             <div class="panel-heading">
                 {{ item.name }} for {{ item.wisher.username }}
-                    {% if request.user == item.wisher %}
-                        <a class="pull-right inverse" href="{% url 'item_update' item.id %}"><i class="fa fa-edit"></i> Edit</a>
-                    {% endif %}
+                {% if request.user == item.wisher %}
+                    <form class="pull-right delete" method="POST" action="{% url 'item_delete' item.id %}">
+                        {% csrf_token %}
+                        <a class="inverse" data-name="{{item.name}}"><i class="fa fa-trash"></i> Delete</a>
+                    </form>
+                {% endif %}
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
 
                 <div class="list-group">
                     <li class="list-group-item">
-                       <i class="fa fa-list"></i> Description: {{ item.description }}
+                        <h4><i class="fa fa-list"></i> {{ item.description }}</h4>
                     </li>
                     {% if item.link %}
                     <a class="list-group-item" target="_blank" href="{{item.link}}">
-                       <i class="fa fa-link"></i> {{ item.link }}
+                        <h4><i class="fa fa-link"></i> {{ item.link }}</h4>
                     </a>
                     {% endif %}
                     <li class="list-group-item">
-                       Wanted: {{ item.quantity }}
+                       <i class="fa fa-sort"></i> {{ item.quantity }}
                     </li>
                     {% if request.user == item.wisher %}
-                        <li class="list-group-item">
-                            <form method="POST" action="{% url 'item_delete' item.id %}">
-                                {% csrf_token %}
-                                <input class="form-control" type="submit" value="Delete"/>
-                            </form>
-                        </li>
+                    <a class="list-group-item active" href="{% url 'item_update' item.id %}"><i class="fa fa-edit"></i> Edit</a>
                     {% endif %}
                 </div>
             </div>

@@ -38,6 +38,23 @@
     <![endif]-->
 </head>
 <body>
+    <div id="confirmDeleteModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="deleteItem">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                 <div class="modal-header">
+                  <h3>Delete <i class="fa fa-exclamation"></i><i class="fa fa-question"></i></h3>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete <span id="modalDeleteItemName" class="text-danger"></span>?
+                </div>
+                <div class="modal-footer">
+                    <button id="cancelDeleteBtn" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="deleteItemBtn" type="button" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% block nav %}
         {% include 'wishlist_app/nav.html' %}
     {% endblock %}
@@ -67,5 +84,8 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'bootstrap/dist/js/sb-admin-2.js' %}"></script>
+
+    <!--custom js-->
+    <script src="{% static 'js/home.js' %}"></script>
 </body>
 </html>

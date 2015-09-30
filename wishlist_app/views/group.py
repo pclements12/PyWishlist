@@ -2,11 +2,12 @@ from wishlist_app.forms.GroupForm import GroupForm
 from django.shortcuts import render, get_object_or_404, redirect
 from wishlist_app.models import GroupMember, WishlistGroup, Item, User
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.http import require_http_methods, require_POST, require_GET
 from django.core.exceptions import PermissionDenied
 
 
 @login_required(login_url="login")
+@require_GET
 def home(request, group_id):
     group = get_object_or_404(WishlistGroup, pk=group_id)
     if not group.contains_user(request.user):
@@ -91,7 +92,9 @@ def delete(request, group_id):
     print "Successfully deleted group"
     return redirect("wishlists")
 
+
 @login_required
+@require_GET
 def user_wishlist(request, group_id, wisher_id):
     group = get_object_or_404(WishlistGroup, pk=group_id)
     wisher = get_object_or_404(User, pk=wisher_id)

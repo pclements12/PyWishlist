@@ -1,17 +1,17 @@
  <div class="list-group">
      {% for member in members %}
-    <a href="{% url 'user_wishlist' member.group.id member.user.id %}" class="list-group-item" title="View wishes">
-        <i class="fa fa-user fa-fw"></i>{{ member.user.username }}
+    <li class="list-group-item" title="View wishes">
+        <a href="{% url 'user_wishlist' member.group.id member.user.id %}"><i class="fa fa-user fa-fw"></i>{{ member.user.username }}</a>
         <span class="pull-right text-muted small">
             <em>
             {% if request.user == group.creator %}
-                 <form method="POST" action="{% url 'remove_user' member.id %}">
+                 <form class="delete" method="POST" action="{% url 'remove_user' member.id %}">
                     {% csrf_token %}
-                    <input class="btn btn-sm" type="submit" value="remove"/>
+                    <a class="pull-right" data-name="{{ member.user.username }}"><i class="fa fa-trash"></i> Remove</a>
                  </form>
             {% endif %}
             </em>
         </span>
-    </a>
+    </li>
     {% endfor %}
 </div>
