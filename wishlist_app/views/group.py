@@ -16,7 +16,7 @@ def home(request, group_id):
         "wishes": Item.objects.filter(group=group, wisher=request.user).order_by("name"),
         "gives": Item.objects.filter(group=group, giver=request.user).order_by("name"),
         "group": group,
-        "members": group.members()
+        "members": group.members(),
     }
     return render(request, "wishlist_app/group/group_home.html", context)
 

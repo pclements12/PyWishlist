@@ -37,11 +37,6 @@ def do_logout(request):
 @login_required
 @require_GET
 def wishlists(request):
-    groups = WishlistGroup.get_groups_by_user(request.user)
-    print groups
-    context = {
-        "wishlists": groups
-    }
     return render(request, "wishlist_app/wishlists.html", context)
 
 
