@@ -9,3 +9,7 @@ form.delete a{
 form.delete a:hover{
     color: red
 }
+
+a.no-link{
+    cursor: default
+}
