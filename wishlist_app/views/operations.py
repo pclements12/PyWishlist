@@ -37,6 +37,6 @@ def do_logout(request):
 @login_required
 @require_GET
 def wishlists(request):
-    return render(request, "wishlist_app/wishlists.html", context)
+    return render(request, "wishlist_app/wishlists.html")
 
 
