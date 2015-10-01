@@ -39,9 +39,9 @@
             <li class="divider"></li>
             <li role="presentation">
                 {% if group %}
-                <a href="{% url 'group_home' group.id %}"><i class="fa fa-users"></i> Group Home</a>
+                <a href="{% url 'group_home' group.id %}"><i class="fa fa-users"></i> {{ group.name }}</a>
                 {% elif item %}
-                <a href="{% url 'group_home' item.group.id %}"><i class="fa fa-users"></i> Group Home</a>
+                <a href="{% url 'group_home' item.group.id %}"><i class="fa fa-users"></i> {{ group.name }}</a>
                 {% endif %}
             </li>
         {% else %}
