@@ -33,6 +33,12 @@ class WishlistGroup(models.Model):
     creator = models.ForeignKey(User, related_name="group_creator", default=None)
     end_date = models.DateField(default=None, blank=True, null=True)
     users = models.ManyToManyField(User, through='GroupMember')
+    # include this so we can compare with WishlistGroup.REGULAR for example
+    REGULAR = "regular"
+    SECRET_SANTA = "secret_santa"
+    REGISTRY = "registry"
+    GROUP_TYPES = ((REGULAR, "Individual Wishlists"), (SECRET_SANTA, "Secret Santa"), (REGISTRY, 'Registry/Birthday'))
+    type = models.CharField(max_length=30, choices=GROUP_TYPES, default=REGULAR)
 
     @staticmethod
     def get_groups_by_user(user):
@@ -69,6 +75,16 @@ class WishlistGroup(models.Model):
                 return True
         return False
 
+    # for a secret-santa type group, create any missing assignments
+    def create_secret_santa_assignments(self):
+        if not self.type == self.SECRET_SANTA:
+            return
+        for user in self.users.all():
+            try:
+                SecretSantaAssignment.objects.get(group=self, wisher=user)
+            except SecretSantaAssignment.DoesNotExist:
+                SecretSantaAssignment.objects.create(group=self, wisher=user)
+
     def __str__(self):
         return self.name
 
@@ -78,7 +94,7 @@ class Item(models.Model):
     description = models.TextField(default=None, null=True, blank=True)
     link = models.URLField(default=None, null=True, blank=True)
     quantity = models.IntegerField(default=1, null=True, blank=True)
-    group = models.ForeignKey(WishlistGroup, related_name="wishlist_group")
+    group = models.ForeignKey(WishlistGroup, related_name="wishlist_group", on_delete=models.CASCADE)
     wisher = models.ForeignKey(User, related_name="wishlist_wisher")
     giver = models.ForeignKey(User, related_name="wishlist_giver", default=None, blank=True, null=True)
     claimed = models.BooleanField(default=False)
@@ -100,7 +116,7 @@ class Item(models.Model):
 
 
 class GroupMember(models.Model):
-    group = models.ForeignKey(WishlistGroup, related_name="group_member_wishlistgroup")
+    group = models.ForeignKey(WishlistGroup, related_name="group_member_wishlistgroup", on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name="group_member_user")
 
     class Meta:
@@ -115,7 +131,7 @@ def generate_uuid():
 
 
 class Invite(models.Model):
-    group = models.ForeignKey(WishlistGroup, related_name="invite_group")
+    group = models.ForeignKey(WishlistGroup, related_name="invite_group", on_delete=models.CASCADE)
     key = models.CharField(max_length=64, verbose_name=u"Activation key", default=generate_uuid, null=False)
     email = models.EmailField(null=False)
 
@@ -123,5 +139,26 @@ class Invite(models.Model):
         return "Invite: %s to %s (%s)" % (self.group, self.email, self.key)
 
 
+class SecretSantaAssignment(models.Model):
+    group = models.ForeignKey(WishlistGroup, related_name="santa_group", null=False, on_delete=models.CASCADE)
+    wisher = models.ForeignKey(User, related_name="santa_wisher", null=False)
+    giver = models.ForeignKey(User, related_name="santa_giver", null=True, default=None)
+
+    def __str__(self):
+        return "Group: %s, Wisher: %s, Giver: %s" % (self.group, self.wisher, self.giver)
+
+    class Meta:
+        unique_together = ("group", "wisher", "giver")
+
+
+class RegistryAssignment(models.Model):
+    group = models.OneToOneField(WishlistGroup, related_name="registry_group", null=False, on_delete=models.CASCADE)
+    wisher = models.ForeignKey(User, related_name="registry_wisher", null=False)
+
+    def __str__(self):
+        return "Group: %s, Wisher: %s" % (self.group, self.wisher)
+
+    class Meta:
+        unique_together = ("group", "wisher")
 
 

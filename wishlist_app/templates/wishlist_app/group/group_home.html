@@ -20,6 +20,11 @@
             </div>
             {% if request.user == group.creator %}
                 <div class="panel-footer">
+                    {% if not group.type == group.REGULAR %}
+                    <a class="btn btn-lg btn-default btn-block" href="{% url 'group_assignments' group.id %}">
+                        <i class="fa fa-arrows-h"></i> Edit Assignments
+                    </a>
+                    {% endif %}
                     <a class="btn btn-lg btn-info btn-block" href="{% url 'group_update' group.id%}">
                         <i class="fa fa-edit"></i> Edit Group</a>
                 </div>

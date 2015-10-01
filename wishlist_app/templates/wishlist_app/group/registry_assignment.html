@@ -1,0 +1,17 @@
+{% extends 'wishlist_app/group/group_base.html' %}
+{% block title %}
+    <title>{{ group.name }}</title>
+{% endblock%}
+{% block body %}
+    <h4>Who's birthday/registry is this group for?</h4>
+    <form method="post" action="{% url 'group_assignments' group.id %}">
+        {% csrf_token %}
+        {% load bootstrap3 %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+              <i class="fa fa-plus-circle"></i> Save
+            </button>
+        {% endbuttons %}
+    </form>
+{% endblock %}

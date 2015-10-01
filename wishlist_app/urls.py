@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^group/$', group.create, name="group_create"),
     url(r'^group/(?P<group_id>[0-9]+)/edit/?$', group.update, name="group_update"),
     url(r'^group/(?P<group_id>[0-9]+)/delete/?$', group.delete, name="group_delete"),
+    url(r'^group/(?P<group_id>[0-9]+)/assignments/?$', group.assignments, name="group_assignments"),
 
     # group member operations
     url(r'^(?P<group_id>[0-9]+)/user/(?P<wisher_id>[0-9]+)/$', group.user_wishlist, name="user_wishlist"),

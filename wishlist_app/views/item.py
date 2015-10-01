@@ -49,16 +49,16 @@ def update(request, item_id):
     print "Update item: %s" % item
     if request.POST:
         print "posted values %s" % request.POST
-        item.name = request.POST['name']
-        item.description = request.POST['description']
-        item.link = request.POST['link']
-        item.quantity = request.POST['quantity']
-        print "update item quantity %s" % item.quantity
-        if int(item.quantity) < 1:
+        item_form = ItemForm(request.POST, instance=item)
+        if not item_form.is_valid():
+            return render(request, 'wishlist_app/item/update_item.html', {'item_form': item_form, 'item': item})
+        u_item = item_form.save(commit=False)
+        if int(u_item.quantity) < 1:
             print "item quantity less than 1, defaulting to 1"
-            item.quantity = 1
-        item.save()
-        print "update item %s" % item
+            u_item.quantity = 1
+        saved_item = item_form.save()
+        item_form.save_m2m()
+        print "update item %s" % saved_item
         return redirect("group_home", item.group.id)
     else:
         item_form = ItemForm(instance=item)
