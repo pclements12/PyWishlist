@@ -10,7 +10,7 @@
                 {% if request.user == item.wisher %}
                     <form class="pull-right delete" method="POST" action="{% url 'item_delete' item.id %}">
                         {% csrf_token %}
-                        <a class="inverse" data-name="{{item.name}}"><i class="fa fa-trash"></i> Delete</a>
+                        <a class="delete inverse" data-name="{{item.name}}"><i class="fa fa-trash"></i> Delete</a>
                     </form>
                 {% endif %}
             </div>

@@ -101,29 +101,3 @@ def generate_invite_link(inv):
     url = "%s?activation_key=%s" % (reverse("register"), inv.key)
     print "Registration url: %s" % url
     return url
-
-# json example:
-# from django.forms.models import model_to_dict
-# import json
-# data = model_to_dict(user, fields=('username', 'id'))
-# return HttpResponse(json.dumps(data), content_type='application/json')
-
-
-
-#
-# def require_user_can_edit_item(**map):
-#     print "map: %s" % map
-#     if "index" in map:
-#         index = map['index']
-#     else:
-#         raise Exception("args index of item id must be specified")
-#
-#         def decorator(func):
-#             def new_method(request, *args, **kwargs):
-#                 item = get_object_or_404(Item, pk=args[index])
-#                 if item.user != request.user:
-#                     raise PermissionDenied
-#                 return func(request, *args, **kwargs)
-#             return new_method
-#         return decorator
-#

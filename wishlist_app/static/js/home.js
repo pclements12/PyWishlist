@@ -3,7 +3,7 @@
     //handle confirming deletes
     var currentDeleteForm = null;
 
-    $("form.delete a").click(function(ev){
+    $("form.delete a.delete").click(function(ev){
         var $target = $(ev.target)
         currentDeleteForm = $target.closest("form")
         if(!currentDeleteForm){

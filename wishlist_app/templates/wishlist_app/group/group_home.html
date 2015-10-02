@@ -12,12 +12,12 @@
                 {% if request.user == group.creator %}
                 <form class="pull-right delete" method="POST" action="{% url 'group_delete' group.id %}">
                     {% csrf_token %}
-                    <a class="inverse" data-name="{{ group.name }}"><i class="fa fa-trash"></i> Delete</a>
+                    <a class="delete inverse" data-name="{{ group.name }}"><i class="fa fa-trash"></i> Delete</a>
                 </form>
                 {% endif %}
             </div>
             <div class="panel-body">
-                <h5>{{group.description}}</h5>
+                <h5><i class="fa fa-quote-left"></i> {{group.description}} <i class="fa fa-quote-right"></i> </h5>
                 {% block group_assignment %}
                 {% endblock %}
             </div>
@@ -75,7 +75,9 @@
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-                {% include 'wishlist_app/group/wishlist_members.html' %}
+                {% block member_links %}
+                    {% include 'wishlist_app/group/wishlist_members.html' %}
+                {% endblock %}
             </div>
 
             <div class="panel-footer">
