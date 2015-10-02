@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.core.exceptions import PermissionDenied
 import uuid
 
 # Create your models here.
@@ -85,6 +86,33 @@ class WishlistGroup(models.Model):
             except SecretSantaAssignment.DoesNotExist:
                 SecretSantaAssignment.objects.create(group=self, wisher=user)
 
+    def get_assignment(self, user):
+        if self.type == self.REGULAR:
+            return None
+        if self.is_secret_santa():
+            try:
+                ass = SecretSantaAssignment.objects.get(group=self, giver=user)
+                if ass.wisher is not None:
+                    return ass
+                return None
+            except SecretSantaAssignment.DoesNotExist:
+                return None
+        elif self.is_registry():
+            try:
+                return RegistryAssignment.objects.get(group=self)
+            except RegistryAssignment.DoesNotExist:
+                return None
+        return None
+
+    def is_regular(self):
+        return self.type == self.REGULAR
+
+    def is_secret_santa(self):
+        return self.type == self.SECRET_SANTA
+
+    def is_registry(self):
+        return self.type == self.REGISTRY
+
     def __str__(self):
         return self.name
 
@@ -108,6 +136,19 @@ class Item(models.Model):
         self.giver = None
         self.claimed = False
         self.save()
+
+    def check_claim(self, user):
+        if self.giver is not None:
+            raise PermissionDenied("Item has already been claimed")
+        if user == self.wisher:
+            raise PermissionDenied("User's can't claim their own items")
+        assignment = self.group.get_assignment(user)
+        if self.group.is_secret_santa():
+            if assignment.wisher != self.wisher:
+                raise PermissionDenied("User must be the wisher's secret santa to claim their items")
+        elif self.group.is_registry():
+            if self.wisher != assignment.wisher:
+                raise PermissionDenied("Can only claim items of the registry's target user")
 
     def __str__(self):
         if self.giver is None:

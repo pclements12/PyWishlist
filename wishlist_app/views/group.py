@@ -1,13 +1,20 @@
 from wishlist_app.forms.GroupForm import GroupForm
 from wishlist_app.forms.RegistryForm import RegistryForm
-from wishlist_app.forms.SecretSantaForm import SecretSantaForm, SecretSantaFormSet
+from wishlist_app.forms.SecretSantaForm import SecretSantaFormSet
 from django.shortcuts import render, get_object_or_404, redirect
 from wishlist_app.models import GroupMember, WishlistGroup, Item, User, SecretSantaAssignment, RegistryAssignment
-
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
+
+
+def get_home_template(group):
+    if group.is_secret_santa():
+        return "wishlist_app/group/secret_santa_home.html"
+    elif group.is_registry():
+        return "wishlist_app/group/registry_home.html"
+    return "wishlist_app/group/group_home.html"
 
 
 @login_required(login_url="login")
@@ -21,8 +28,9 @@ def home(request, group_id):
         "gives": Item.objects.filter(group=group, giver=request.user).order_by("name"),
         "group": group,
         "members": group.members(),
+        "assignment": group.get_assignment(request.user),
     }
-    return render(request, "wishlist_app/group/group_home.html", context)
+    return render(request, get_home_template(group), context)
 
 
 @login_required
@@ -99,7 +107,8 @@ def user_wishlist(request, group_id, wisher_id):
     return render(request, "wishlist_app/group/user_wishlist.html", {
         "group": group,
         "wisher": wisher,
-        "items": items
+        "items": items,
+        "assignment": group.get_assignment(request.user)
     })
 
 

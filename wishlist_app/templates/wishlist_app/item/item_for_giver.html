@@ -1,8 +1,0 @@
-<ul>
-    {% for item in items %}
-        <li>
-            <a href="/wishlist/item/{{ item.id }}/">{{ item.name }}</a>
-            Claimed <input type="checkbox" disabled="true" {{ item.claimed ? "checked" : ""}}/>
-        </li>
-    {% endfor %}
-</ul>

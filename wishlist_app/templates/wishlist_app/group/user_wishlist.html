@@ -9,7 +9,11 @@
             {% for item in items %}
                 <li>
                     <a href="{% url 'item_read' item.id %}">{{ item.name }}</a>
-                   {% include 'wishlist_app/item/item_claim.html' %}
+                    {% if item.group.is_secret_santa %}
+                        {% include 'wishlist_app/item/item_claim_secret_santa.html' %}
+                    {% else %}
+                        {% include 'wishlist_app/item/item_claim.html' %}
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>

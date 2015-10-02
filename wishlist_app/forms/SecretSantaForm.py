@@ -1,4 +1,4 @@
-from django.forms import ModelForm, BaseModelFormSet
+from django.forms import ModelForm
 from wishlist_app.models import SecretSantaAssignment
 from django.utils.translation import ugettext_lazy as _
 from django.forms.models import modelformset_factory
@@ -18,6 +18,9 @@ class SecretSantaForm(ModelForm):
     class Meta:
         model = SecretSantaAssignment
         fields = ["wisher", "giver"]
+        labels = {
+            'giver': _('Secret Santa'),
+        }
 
 SecretSantaFormSet = modelformset_factory(SecretSantaAssignment, form=SecretSantaForm, extra=0)
 
