@@ -1,3 +1,6 @@
+# ignore secret file so we don't accidentally commit it
+secrets.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
