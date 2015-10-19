@@ -17,3 +17,7 @@ a.no-link{
 .text-left{
     text-align: left
 }
+
+i.fa-spin{
+    animation: fa-spin 0.3s infinite linear
+}

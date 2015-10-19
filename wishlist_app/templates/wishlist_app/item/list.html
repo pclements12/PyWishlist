@@ -1,15 +1,39 @@
-
-{% if items %}
-    {% for item in items %}
-        <a class="list-group-item" href="{% url 'item_read' item.id %}"><i class="fa fa-gift fa-fw"></i>{{ item.name }}
-           {% if item.quantity > 1 %}
-            <span class="text-muted small badge"><em>{{ item.quantity }}</em>
-            </span>
+<table class="table table-condensed">
+    <thead>
+        <tr>
+            <th class="col-md-3">Item</th>
+            <th class="col-md-1 "></th>
+            {% if items.0.giver %}
+            <th class="col-md-3">Wisher</th>
+            <th class="col-md-3">Giver</th>
+            <th class="col-md-1">Action</th>
+            {% else %}
+            <th class="col-md-6">Wisher</th>
+            <th class="col-md-1">Action</th>
             {% endif %}
-        </a>
-    {% endfor %}
-{% else %}
-     <li class="list-group-item">
-         <i class="fa fa-frown-o fa-fw"></i>No items
-     </li>
-{% endif %}
+        </tr>
+    </thead>
+    <tbody>
+    {% if items %}
+        {% for item in items %}
+        <tr>
+            {% include 'wishlist_app/item/item_row.html' %}
+        </tr>
+        {% endfor %}
+        <tr class="no-items" style="display:none">
+             <td class="col-md-3">
+                <i class="fa fa-frown-o fa-fw"></i>No items
+             </td>
+         </tr>
+    {% else %}
+         <tr class="no-items">
+             <td class="col-md-3">
+                <i class="fa fa-frown-o fa-fw"></i>No items
+             </td>
+         </tr>
+    {% endif %}
+    </tbody>
+</table>
+
+
+

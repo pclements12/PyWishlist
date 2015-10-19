@@ -23,12 +23,24 @@ def home(request, group_id):
     group = get_object_or_404(WishlistGroup, pk=group_id)
     if not group.contains_user(request.user):
         return redirect("wishlists")
+
+    assignment = group.get_assignment(request.user)
+
+    available = Item.objects.filter(group=group, claimed=False).exclude(wisher=request.user)
+    claimed = Item.objects.filter(group=group, claimed=True).exclude(wisher=request.user)
+
+    if group.is_secret_santa():
+        available = available.filter(wisher=assignment.wisher)
+        claimed = claimed.filter(giver=request.user)
+
     context = {
         "wishes": Item.objects.filter(group=group, wisher=request.user).order_by("name"),
         "gives": Item.objects.filter(group=group, giver=request.user).order_by("name"),
         "group": group,
         "members": group.members(),
-        "assignment": group.get_assignment(request.user),
+        "assignment": assignment,
+        "available_items": available,
+        "claimed_items": claimed
     }
     return render(request, get_home_template(group), context)
 

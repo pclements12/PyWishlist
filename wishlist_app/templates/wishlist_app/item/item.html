@@ -32,6 +32,19 @@
                     {% if request.user == item.wisher %}
                     <a class="list-group-item active" href="{% url 'item_update' item.id %}"><i class="fa fa-edit"></i> Edit</a>
                     {% endif %}
+                    {% if item.group.is_secret_santa %}
+                        {% if item.claimed %}
+
+                        {% else %}
+
+                        {% endif %}
+                    {% else %}
+                        {% if item.claimed %}
+
+                        {% else %}
+
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -91,7 +91,7 @@ def delete(request, item_id):
 
 
 @login_required
-@require_GET
+@require_POST
 def claim(request, item_id):
     print "claiming item %s" % item_id
     item = get_object_or_404(Item, pk=item_id)
@@ -100,11 +100,11 @@ def claim(request, item_id):
     print "updating item %s for claim by %s" % (item, request.user)
     item.claim(request.user)
     print "item successfully claimed"
-    return redirect("item_read", item.id)
+    return render(request, 'wishlist_app/item/item_row.html', {'item': item, 'group': item.group})
 
 
 @login_required
-@require_GET
+@require_POST
 def unclaim(request, item_id):
     print "unclaiming item %s" % item_id
     item = get_object_or_404(Item, pk=item_id)
@@ -116,4 +116,4 @@ def unclaim(request, item_id):
     print "updating item %s for unclaim by %s" % (item, request.user)
     item.unclaim()
     print "item successfully claimed"
-    return redirect("item_read", item.id)
+    return render(request, 'wishlist_app/item/item_row.html', {'item': item, 'group': item.group})

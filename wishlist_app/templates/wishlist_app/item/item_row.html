@@ -1,0 +1,36 @@
+<td>
+    <a class="text-left" href="{% url 'item_read' item.id %}">
+        <i class="fa fa-gift fa-fw"></i> {{ item.name }}
+    </a>
+</td>
+<td>
+    {% if item.quantity > 1 %}
+      <span class="text-muted small badge"><em>{{ item.quantity }}</em></span>
+    {% endif %}
+</td>
+<td>
+    <a class="text-left" href="{% url 'user_wishlist' group.id item.wisher.id %}">
+        <i class="fa fa-user fa-fw"></i> {{ item.wisher.username }}
+    </a>
+</td>
+{% if item.giver %}
+<td>
+    <a class="text-left" href="{% url 'user_wishlist' group.id item.giver.id %}">
+        <i class="fa fa-user fa-fw"></i> {{ item.giver.username }}
+    </a>
+</td>
+{% endif %}
+{% if not item.claimed %}
+<td>
+    <a class="text-left claim" data-url="{% url 'item_claim' item.id %}" href="#claim">
+        <i class="fa fa-gift fa-fw"></i> Claim
+    </a>
+</td>
+{% endif %}
+{% if item.claimed and request.user == item.giver %}
+<td>
+    <a class="text-left unclaim" data-url="{% url 'item_unclaim' item.id %}" href="#unclaim">
+        <i class="fa fa-gift fa-fw"></i> Unclaim
+    </a>
+</td>
+{% endif %}
