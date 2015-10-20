@@ -17,6 +17,7 @@ import os
 # 2. in the file, use this to set the secret key:
 #   os.environ["DJANGO_SECRET_KEY"] = "the key"
 import secrets
+import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -84,15 +85,13 @@ WSGI_APPLICATION = 'wishlist.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'wishlist',
-        'USER': os.environ['DJANGO_DB_USER'],
-        'PASSWORD': os.environ['DJANGO_DB_PASSWORD'],
-        'HOST': '127.0.0.1',
-        'PORT': '5432'
-    }
+    'default': dj_database_url.parse('postgres://super-user:patrick12@127.0.0.1:5432/wishlist')
 }
+
+if os.environ.get('DATABASE_URL'):
+    DATABASES['default'] = dj_database_url.config()
+
+
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
