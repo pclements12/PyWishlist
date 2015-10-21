@@ -12,11 +12,6 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-# secrets is not included in source control
-# 1. create a secrets.py file in this package
-# 2. in the file, use this to set the secret key:
-#   os.environ["DJANGO_SECRET_KEY"] = "the key"
-import secrets
 import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
