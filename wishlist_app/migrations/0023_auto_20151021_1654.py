@@ -17,14 +17,14 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='invite',
-            name='by',
-            field=models.ForeignKey(related_name='invited_by', default=None, to=settings.AUTH_USER_MODEL),
-            preserve_default=False,
+            name='created_date',
+            field=models.DateField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
             model_name='invite',
-            name='on',
-            field=models.DateField(default=django.utils.timezone.now),
+            name='inviter',
+            field=models.ForeignKey(related_name='invited_by', default=1, to=settings.AUTH_USER_MODEL),
+            preserve_default=False,
         ),
         migrations.AddField(
             model_name='invite',
@@ -34,11 +34,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='role',
             name='created_date',
-            field=models.DateTimeField(default=datetime.datetime(2015, 10, 21, 14, 31, 48, 841000)),
+            field=models.DateTimeField(default=datetime.datetime.now),
         ),
         migrations.AlterField(
             model_name='role',
             name='modified_date',
-            field=models.DateTimeField(default=datetime.datetime(2015, 10, 21, 14, 31, 48, 841000)),
+            field=models.DateTimeField(default=datetime.datetime.now),
         ),
     ]
