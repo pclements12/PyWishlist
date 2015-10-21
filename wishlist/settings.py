@@ -86,6 +86,12 @@ DATABASES = {
 if os.environ.get('DATABASE_URL'):
     DATABASES['default'] = dj_database_url.config()
 
+# SendGrid Email settings
+EMAIL_HOST_USER = os.environ['SENDGRID_USERNAME']
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = os.environ['SENDGRID_PASSWORD']
 
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
