@@ -24,12 +24,8 @@
 
 {# Don't show what the user is getting if it's a birthday/registry list for them #}
 
-{% block user_gives %}
-    {% if assignment.wisher != request.user %}
-        {{ block.super }}
-    {% endif %}
+{% block group_items %}
 {% endblock %}
-
 
 {% block member_links %}
     {% include "wishlist_app/group/secret_santa_members.html" %}

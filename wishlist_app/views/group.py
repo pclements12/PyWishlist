@@ -114,6 +114,10 @@ def delete(request, group_id):
 def user_wishlist(request, group_id, wisher_id):
     group = get_object_or_404(WishlistGroup, pk=group_id)
     wisher = get_object_or_404(User, pk=wisher_id)
+    print "view user wishlist request: %s, user: %s" % (request.user, wisher)
+    if request.user == wisher:
+        return redirect("group_home", group.id)
+
     print "Wisher: %s: %s" % (wisher_id, wisher.username)
 
     assignment = group.get_assignment(request.user)
