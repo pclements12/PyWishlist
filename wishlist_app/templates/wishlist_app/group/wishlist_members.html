@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <a class="text-left btn btn-default col-lg-11 col col-md-8 col-sm-8 col-xs-6" href="{% url 'user_wishlist' member.group.id member.user.id %}">
-                    <i class="fa fa-user fa-fw"></i> {{ member.user.username }}
+                    <i class="fa fa-user fa-fw"></i> {{ member.user.username }} {% if member.user.get_full_name %}({{ member.user.get_full_name }}){% endif %}
                 </a>
                 {% if request.user == group.creator %}
                     {% csrf_token %}

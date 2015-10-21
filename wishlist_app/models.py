@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.utils import timezone
 from django.core.exceptions import PermissionDenied
 import uuid
 
@@ -172,12 +173,15 @@ def generate_uuid():
 
 
 class Invite(models.Model):
+    inviter = models.ForeignKey(User, related_name='invited_by')
+    created_date = models.DateField(default=timezone.now)
     group = models.ForeignKey(WishlistGroup, related_name="invite_group", on_delete=models.CASCADE)
     key = models.CharField(max_length=64, verbose_name=u"Activation key", default=generate_uuid, null=False)
     email = models.EmailField(null=False)
+    used = models.BooleanField(default=False)
 
     def __str__(self):
-        return "Invite: %s to %s (%s)" % (self.group, self.email, self.key)
+        return "Invite by %s: %s to %s (%s) on %s" % (self.inviter, self.group, self.email, self.key, self.created_date)
 
 
 class SecretSantaAssignment(models.Model):

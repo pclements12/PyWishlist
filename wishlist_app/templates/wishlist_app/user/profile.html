@@ -1,0 +1,23 @@
+{% extends 'wishlist_app/base.html' %}
+{% block body %}
+    <div class="row">
+        <div class="col-lg-8 col-md-6 col-sm-6 col-xs-12">
+            <div class="panel panel-primary">
+                    <div class="panel-heading">Profile</div>
+                    <div class="panel-body">
+                        <h3>Bio Info</h3>
+                        <p>{{ user.username }}</p>
+                        <p>First name: <em>{{ user.first_name }}</em></p>
+                        <p>Last name: <em>{{ user.last_name }}</em></p>
+                        <p>Email: <em>{{ user.email }}</em></p>
+                        <p>Member since: <em>{{user.date_joined}}</em></p>
+                        <p/>
+                        <h3>Activity</h3>
+                        <p>Groups joined: <em>{{ group_count }}</em></p>
+                        <p>Invites sent: <em>{{ invite_count }}</em></p>
+                        <a class="list-group-item active" href="{% url 'user_update'%}"><i class="fa fa-edit"></i> Edit</a>
+                    </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
