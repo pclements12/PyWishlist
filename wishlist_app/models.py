@@ -10,8 +10,8 @@ import uuid
 
 
 class DBObject(models.Model):
-    created_date = models.DateTimeField(default=datetime.now())
-    modified_date = models.DateTimeField(default=datetime.now())
+    created_date = models.DateTimeField(default=datetime.now)
+    modified_date = models.DateTimeField(default=datetime.now)
     created_by = models.ForeignKey(User, related_name='%(class)s_created_by', default=None, blank=True, null=True)
     modified_by = models.ForeignKey(User, related_name='%(class)s_modified_by', default=None, blank=True, null=True)
 
