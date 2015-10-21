@@ -32,6 +32,7 @@ urlpatterns = [
     # user
     url(r'^user$', user.profile, name="user_profile"),
     url(r'^user/edit$', user.update, name="user_update"),
+    url(r'^user/remove/(?P<group_id>[0-9]+)$', user.remove, name="user_remove"),
     url(r'^user/search/(?P<group_id>[0-9]+)$', user.search, name="user_search"),
     url(r'^user/invite', user.invite, name="user_invite"),
 ]

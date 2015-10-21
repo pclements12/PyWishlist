@@ -23,7 +23,7 @@
                     </li>
                     {% if item.link %}
                     <a class="list-group-item" target="_blank" href="{{item.link}}">
-                        <h4><i class="fa fa-link"></i> {{ item.link }}</h4>
+                        <h4><i class="fa fa-link"></i> {{ item.link | truncatechars:35 }}</h4>
                     </a>
                     {% endif %}
                     <li class="list-group-item">

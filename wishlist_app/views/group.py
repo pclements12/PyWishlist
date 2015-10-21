@@ -115,11 +115,21 @@ def user_wishlist(request, group_id, wisher_id):
     group = get_object_or_404(WishlistGroup, pk=group_id)
     wisher = get_object_or_404(User, pk=wisher_id)
     print "Wisher: %s: %s" % (wisher_id, wisher.username)
-    items = Item.objects.filter(wisher=wisher, group=group)
+
+    assignment = group.get_assignment(request.user)
+
+    available = Item.objects.filter(group=group, wisher=wisher, claimed=False)
+    claimed = Item.objects.filter(group=group, wisher=wisher, claimed=True)
+
+    if group.is_secret_santa():
+        available = available.filter(wisher=assignment.wisher)
+        claimed = claimed.filter(giver=request.user)
+
     return render(request, "wishlist_app/group/user_wishlist.html", {
         "group": group,
         "wisher": wisher,
-        "items": items,
+        "available_items": available,
+        "claimed_items": claimed,
         "assignment": group.get_assignment(request.user)
     })
 
