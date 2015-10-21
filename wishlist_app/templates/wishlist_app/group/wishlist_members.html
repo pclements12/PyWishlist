@@ -4,13 +4,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <a class="text-left btn btn-default col-lg-11 col col-md-8 col-sm-8 col-xs-6" href="{% url 'user_wishlist' member.group.id member.user.id %}">
-                    <i class="fa fa-user fa-fw"></i> {{ member.user.username }}
-                    {% with first=member.user.first_name last=member.user.last_name %}
-                    {% if first or last %}
-                        {# Parenthesis around names, space only if both first and last are present #}
-                        ({% if first %}{{ first }}{% endif %}{% if first and last%} {% endif %}{% if last %}{{ last }}{% endif %})
-                    {% endif %}
-                    {% endwith %}
+                    <i class="fa fa-user fa-fw"></i> {{ member.user.username }} {% if member.user.get_full_name %}({{ member.user.get_full_name }}){% endif %}
                 </a>
                 {% if request.user == group.creator %}
                     {% csrf_token %}

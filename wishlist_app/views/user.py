@@ -8,6 +8,7 @@ from django.core import urlresolvers
 from django.core.mail import send_mail
 from wishlist_app.models import User, WishlistGroup, Invite
 from wishlist_app.forms.LongRegistrationForm import LongRegistrationForm
+from wishlist_app.forms.UserUpdateForm import UserUpdateForm
 
 
 @login_required
@@ -28,6 +29,16 @@ def do_search(name):
     return users | emails
 
 
+@login_required
+def profile(request):
+    group_count = len(WishlistGroup.get_groups_by_user(request.user))
+    invite_count = len(Invite.objects.filter(inviter=request.user))
+    return render(request, "wishlist_app/user/profile.html",
+                  {"user": request.user,
+                   "group_count": group_count,
+                   "invite_count": invite_count})
+
+
 @require_http_methods(['GET', 'POST'])
 def register(request):
     print "Register: %s" % request
@@ -38,6 +49,8 @@ def register(request):
             key = request.session['activation_key']
             print "Session activation key? %s" % key
         form = LongRegistrationForm(request.POST)
+        if not form.is_valid():
+            return render(request, 'wishlist_app/register.html', {"form": form})
         print "Creating user..."
         user = form.save()
         print "New user created: %s" % user
@@ -48,13 +61,12 @@ def register(request):
         if key is not None:
             try:
                 print "Activation key? %s" % key
-                inv = Invite.objects.get(key=key)
-                print "Update user email with invite email %s" % inv.email
-                user.email = inv.email
+                inv = Invite.objects.get(key=key, used=False)
                 user.save()
                 inv.group.add_user(user)
                 print "User successfully added to invite group %s" % inv.group
-                inv.delete()
+                inv.used = True
+                inv.save()
                 if 'activation_key' in request.session:
                     del request.session['activation_key']
                 print "invite scrubbed from db, key removed from session"
@@ -83,8 +95,8 @@ def invite(request):
     if not group.contains_user(request.user):
         raise PermissionDenied("Can't invite people to a group if you aren't in it")
     print "requesting user belongs to the group %s" % request.user
-    inv = Invite.objects.create(email=request.POST['email'], group=group)
-    print "Invite created %s" % inv
+    inv = Invite.objects.create(email=request.POST['email'], group=group, by=request.user)
+    print "Invite created [%s]" % inv
     send_invite_email(request, inv, group)
     return HttpResponse("Invite sent")
 
@@ -111,3 +123,20 @@ def generate_invite_link(inv):
     url = "%s?activation_key=%s" % (urlresolvers.reverse("register"), inv.key)
     print "Registration url: %s" % url
     return url
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def update(request):
+    print "Update user: %s" % request.user
+    if request.POST:
+        print "posted values %s" % request.POST
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        if not user_form.is_valid():
+            return render(request, 'wishlist_app/user/user_update.html', {'user_form': user_form})
+        user = user_form.save()
+        print "updated user %s" % user
+        return redirect("user_profile")
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        return render(request, 'wishlist_app/user/user_update.html', {'user_form': user_form})
