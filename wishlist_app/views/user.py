@@ -1,13 +1,13 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from wishlist_app.models import User, WishlistGroup, Invite
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
 from django.http import HttpResponse
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.core import urlresolvers
 from django.core.mail import send_mail
+from wishlist_app.models import User, WishlistGroup, Invite
+from wishlist_app.forms.LongRegistrationForm import LongRegistrationForm
 
 
 @login_required
@@ -22,12 +22,10 @@ def search(request, group_id=None):
 def do_search(name):
     print "search: %s" % name
     print "searching for user by email..."
-    users = User.objects.filter(email=name)
-    if not users.exists():
-        print "%s email not found"
-        print "searching for user by username..."
-        users = User.objects.filter(username=name)
-    return users
+    emails = User.objects.filter(email__iexact=name)
+    print "searching for user by username..."
+    users = User.objects.filter(username__icontains=name)
+    return users | emails
 
 
 @require_http_methods(['GET', 'POST'])
@@ -39,7 +37,7 @@ def register(request):
         if 'activation_key' in request.session:
             key = request.session['activation_key']
             print "Session activation key? %s" % key
-        form = UserCreationForm(request.POST)
+        form = LongRegistrationForm(request.POST)
         print "Creating user..."
         user = form.save()
         print "New user created: %s" % user
@@ -71,7 +69,7 @@ def register(request):
         print "activation key provided: %s" % request.GET['activation_key']
         request.session['activation_key'] = request.GET['activation_key']
     print "Get Registration form"
-    form = UserCreationForm()
+    form = LongRegistrationForm()
     print "form created"
     return render(request, 'wishlist_app/register.html', {"form": form})
 
