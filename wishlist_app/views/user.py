@@ -6,7 +6,8 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
-from django.core.urlresolvers import reverse
+from django.core import urlresolvers
+from django.core.mail import send_mail
 
 
 @login_required
@@ -86,18 +87,29 @@ def invite(request):
     print "requesting user belongs to the group %s" % request.user
     inv = Invite.objects.create(email=request.POST['email'], group=group)
     print "Invite created %s" % inv
-    send_invite_email(request, inv)
+    send_invite_email(request, inv, group)
     return HttpResponse("Invite sent")
 
 
-def send_invite_email(request, inv):
+def send_invite_email(request, inv, group):
     path = generate_invite_link(inv)
     print "send invite email for %s @ %s" % (inv, path)
     url = request.build_absolute_uri(path)
     print "Absolute url: %s" % url
+    message = """
+        You've been invited by %s to join '%s'--a Wishlist Group!
+        Follow this link to activate your invitation and join in:
+        %s
+
+        Happy Wishing!
+
+        The Wishlist Team
+
+    """ % (request.user, group.name, url)
+    send_mail("You've been invited to a Wishlist!", message, 'info@pywishlist.com', [inv.email], fail_silently=True)
 
 
 def generate_invite_link(inv):
-    url = "%s?activation_key=%s" % (reverse("register"), inv.key)
+    url = "%s?activation_key=%s" % (urlresolvers.reverse("register"), inv.key)
     print "Registration url: %s" % url
     return url
