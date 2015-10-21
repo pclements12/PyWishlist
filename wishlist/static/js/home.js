@@ -3,6 +3,22 @@
     //handle confirming deletes
     var currentDeleteForm = null;
 
+    cdefaults = {
+        title: "Delete",
+        action: "delete",
+        item: "this item"
+    }
+
+    function cap(string){
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    //Configurable: title/action/item
+    //eg: title: Delete?, action: delete, item = "my item name"
+    //produces:
+    //{{title}}!?
+    //"Are you sure you want to {{action}} {{item}}?
+
     $("form.delete a.delete").click(function(ev){
         var $target = $(ev.target)
         currentDeleteForm = $target.closest("form")
@@ -11,9 +27,22 @@
         }
         else{
             //delete anchor should have a data-name attribute
-            showDeleteModal($target.data("name"))
+            var options = {
+                title: $target.data("title"),
+                action: $target.data("action"),
+                item: $target.data("name")
+            }
+
+            showDeleteModal($target, $.extend(cdefaults, options))
         }
     })
+
+    function populateModal($modal, options){
+        $modal.find(".confirmation-title").html(options.title)
+        $modal.find(".confirmation-action").html(options.action)
+        $modal.find(".confirmation-button").html(cap(options.action))
+        $modal.find(".confirmation-item").html(options.item)
+    }
 
     $("#deleteItemBtn").click(function(){
         currentDeleteForm.submit();
@@ -24,10 +53,10 @@
         currentDeleteForm = null;
     })
 
-    function showDeleteModal(itemName){
-        var modal = $("#confirmDeleteModal")
-        modal.find("#modalDeleteItemName").html(itemName)
-        modal.modal("show");
+    function showDeleteModal(itemName, options){
+        var $modal = $("#confirmDeleteModal")
+        populateModal($modal, options);
+        $modal.modal("show");
     }
 
     //handle item claim/unclaim ajax calls

@@ -140,3 +140,14 @@ def update(request):
     else:
         user_form = UserUpdateForm(instance=request.user)
         return render(request, 'wishlist_app/user/user_update.html', {'user_form': user_form})
+
+
+@login_required
+@require_POST
+def remove(request, group_id):
+    print "Request by %s to leave group %s" (request.user, group_id)
+    group = get_object_or_404(WishlistGroup, pk=group_id)
+    group.remove_user(request.user)
+    print "remove user from group"
+    return redirect("wishlists")
+
