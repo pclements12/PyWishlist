@@ -156,7 +156,7 @@ def update(request):
 @login_required
 @require_POST
 def remove(request, group_id):
-    print "Request by %s to leave group %s" (request.user, group_id)
+    print "Request by %s to leave group %s" % (request.user, group_id)
     group = get_object_or_404(WishlistGroup, pk=group_id)
     group.remove_user(request.user)
     print "remove user from group"
