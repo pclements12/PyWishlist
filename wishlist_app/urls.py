@@ -35,4 +35,7 @@ urlpatterns = [
     url(r'^user/remove/(?P<group_id>[0-9]+)$', user.remove, name="user_remove"),
     url(r'^user/search/(?P<group_id>[0-9]+)$', user.search, name="user_search"),
     url(r'^user/invite', user.invite, name="user_invite"),
+
+    # testing
+    url(r'^invite/(?P<inv_id>[0-9]+)$', user.view_html_invite, name="user_invite_view"),
 ]
