@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     {% load staticfiles %}
-    {# Load bootstrap3 tag library #}
-    {% load bootstrap3 %}
-    <!-- Bootstrap Core CSS -->
-    {% bootstrap_css %}
-    <link rel="stylesheet" href="{% static 'bootstrap/bower_components/font-awesome/css/font-awesome.min.css' %}"/>
 </head>
-<body style="margin-top:20px">
-    <div class="col-lg-12">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
+<body style="margin-top:20px;font-family:Helvetica,Arial,sans-serif;font-size: 14px;box-sizing:border-box">
+    <div style="width:100%;float:left;padding-right:15px;padding-left:15px;">
+        <div style="border-color:#337ab7;margin-bottom:20px;background-color:#fff;
+        border-radius:4px;box-shadow: 0 1px 1px rgba(0,0,0,.05);">
+            <div style="color:#fff;background-color:#337ab7;border-color:#337ab7;
+            padding:10px 15px;border-top-left-radius:3px;border-top-right-radius:
+            3px;border-bottom:1px solid transparent;">
                Welcome!
             </div>
-            <div class="panel-body">
+            <div style="padding:15px;">
                 <p>You've been invited by {{ inv.inviter.username }} to join '{{ inv.group.name }}'--a Wishlist Group!</p>
-                {% if inv.group.description %}<blockquote>{{ inv.group.description }}</blockquote>{% endif %}
+                {% if inv.group.description %}<blockquote style="padding:10px 20px;margin:0 0 20px;
+                font-size:17.5px;border-left:5px solid #eee;">{{ inv.group.description }}</blockquote>{% endif %}
                 <p/>
-                <p><a class="btn btn-primary" href="{{ url }}">Join!</a></p>
-                <p style="margin-top:35px">Happy Wishing! <i class="fa fa-gift"></i></p>
+                <p><a style="display: inline-block;padding: 6px 12px;margin-bottom: 0;
+                font-size: 14px;font-weight: 400;line-height: 1.42857143;text-align: center;white-space: nowrap;
+                vertical-align: middle;touch-action: manipulation;cursor: pointer;user-select: none;
+                background-image: none;border: 1px solid transparent;border-radius: 4px;color: #fff;
+                background-color: #337ab7;border-color: #2e6da4;" href="{{ url }}">Join!</a></p>
+                <p style="margin-top:35px">Happy Wishing!</p>
                 <p>The Wishlist Team</p>
             </div>
         </div>
