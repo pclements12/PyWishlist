@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
+from django.template.loader import render_to_string
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
@@ -106,18 +107,20 @@ def send_invite_email(request, inv):
     print "send invite email for %s @ %s" % (inv, path)
     url = request.build_absolute_uri(path)
     print "Absolute url: %s" % url
-    message = """
-        You've been invited by %s to join '%s'--a Wishlist Group!
-        Follow this link to activate your invitation and join in:
-        %s
 
-        Happy Wishing!
+    msg_plain = render_to_string('templates/email.txt', {'inv': inv})
+    msg_html = render_to_string('templates/email.html', {'inv': inv})
 
-        The Wishlist Team
+    print "generated html and plain text emails for delivery"
 
-    """ % (request.user, inv.group.name, url)
+    send_mail(
+        "You've been invited to a Wishlist!",
+        msg_plain,
+        inv.inviter.email,
+        [inv.email],
+        html_message=msg_html,
+    )
     print "invite sent from %s to %s" % (inv.inviter.email, inv.email)
-    send_mail("You've been invited to a Wishlist!", message, inv.inviter.email, [inv.email], fail_silently=True)
 
 
 def generate_invite_link(inv):
