@@ -108,8 +108,8 @@ def send_invite_email(request, inv):
     url = request.build_absolute_uri(path)
     print "Absolute url: %s" % url
 
-    msg_plain = render_to_string('templates/email.txt', {'inv': inv})
-    msg_html = render_to_string('templates/email.html', {'inv': inv})
+    msg_plain = render_to_string('emails/invite.txt', {'inv': inv})
+    msg_html = render_to_string('emails/invite.html', {'inv': inv})
 
     print "generated html and plain text emails for delivery"
 

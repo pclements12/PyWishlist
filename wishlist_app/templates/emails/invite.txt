@@ -1,4 +1,4 @@
-You've been invited by {{ inv.inviter.name }} to join '{{ inv.group.name }}'--a Wishlist Group!
+You've been invited by {{ inv.inviter.name }} to join '{{ inv.group.name }}'—a Wishlist Group!
 Follow this link to activate your invitation and join in:
 {{ url }}
 
