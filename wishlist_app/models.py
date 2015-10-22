@@ -76,8 +76,6 @@ class WishlistGroup(models.Model):
             i.unclaim()
 
     def contains_user(self, user):
-        print "Check if group contains user:  %s" % user
-        print "Searching group list for user: %s" % self.members()
         for member in self.members():
             if member.user == user:
                 return True
