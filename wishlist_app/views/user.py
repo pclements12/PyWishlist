@@ -95,13 +95,13 @@ def invite(request):
     if not group.contains_user(request.user):
         raise PermissionDenied("Can't invite people to a group if you aren't in it")
     print "requesting user belongs to the group %s" % request.user
-    inv = Invite.objects.create(email=request.POST['email'], group=group, by=request.user)
+    inv = Invite.objects.create(email=request.POST['email'], group=group, inviter=request.user)
     print "Invite created [%s]" % inv
-    send_invite_email(request, inv, group)
+    send_invite_email(request, inv)
     return HttpResponse("Invite sent")
 
 
-def send_invite_email(request, inv, group):
+def send_invite_email(request, inv):
     path = generate_invite_link(inv)
     print "send invite email for %s @ %s" % (inv, path)
     url = request.build_absolute_uri(path)
@@ -115,8 +115,9 @@ def send_invite_email(request, inv, group):
 
         The Wishlist Team
 
-    """ % (request.user, group.name, url)
-    send_mail("You've been invited to a Wishlist!", message, 'info@pywishlist.com', [inv.email], fail_silently=True)
+    """ % (request.user, inv.group.name, url)
+    print "invite sent from %s to %s" % (inv.inviter.email, inv.email)
+    send_mail("You've been invited to a Wishlist!", message, inv.inviter.email, [inv.email], fail_silently=True)
 
 
 def generate_invite_link(inv):
