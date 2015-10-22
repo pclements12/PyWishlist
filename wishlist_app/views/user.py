@@ -102,10 +102,15 @@ def invite(request):
     return HttpResponse("Invite sent")
 
 
+def view_html_invite(request, inv_id):
+    inv = get_object_or_404(Invite, pk=inv_id)
+    url = generate_invite_link(request, inv)
+    return HttpResponse(render_to_string('emails/invite.html', {'inv': inv, 'url': url}))
+
+
 def send_invite_email(request, inv):
-    path = generate_invite_link(inv)
-    print "send invite email for %s @ %s" % (inv, path)
-    url = request.build_absolute_uri(path)
+    url = generate_invite_link(request, inv)
+
     print "Absolute url: %s" % url
 
     msg_plain = render_to_string('emails/invite.txt', {'inv': inv, 'url': url})
@@ -123,8 +128,10 @@ def send_invite_email(request, inv):
     print "invite sent from %s to %s" % (inv.inviter.email, inv.email)
 
 
-def generate_invite_link(inv):
-    url = "%s?activation_key=%s" % (urlresolvers.reverse("register"), inv.key)
+def generate_invite_link(request, inv):
+    path = "%s?activation_key=%s" % (urlresolvers.reverse("register"), inv.key)
+    print "send invite email for %s @ %s" % (inv, path)
+    url = request.build_absolute_uri(path)
     print "Registration url: %s" % url
     return url
 
