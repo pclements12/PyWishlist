@@ -105,8 +105,7 @@ def invite(request):
 def view_html_invite(request, inv_id):
     inv = get_object_or_404(Invite, pk=inv_id)
     url = generate_invite_link(request, inv)
-    return HttpResponse(render_to_string('emails/invite.html', {
-        'inv': inv, 'url': url, 'host': request.build_absolute_uri('/').rstrip('/')}))
+    return HttpResponse(render_to_string('emails/invite.html', {'inv': inv, 'url': url}))
 
 
 def send_invite_email(request, inv):
@@ -115,9 +114,7 @@ def send_invite_email(request, inv):
     print "Absolute url: %s" % url
 
     msg_plain = render_to_string('emails/invite.txt', {'inv': inv, 'url': url})
-    # html email requires the host name to load css with absolute path
-    msg_html = render_to_string('emails/invite.html', {
-        'inv': inv, 'url': url, 'host': request.build_absolute_uri('/').rstrip('/')})
+    msg_html = render_to_string('emails/invite.html', {'inv': inv, 'url': url})
 
     print "generated html and plain text emails for delivery"
 
