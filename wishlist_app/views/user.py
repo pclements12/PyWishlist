@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core import urlresolvers
 from django.core.mail import send_mail
+from datetime import datetime
 from wishlist_app.models import User, WishlistGroup, Invite
 from wishlist_app.forms.LongRegistrationForm import LongRegistrationForm
 from wishlist_app.forms.UserUpdateForm import UserUpdateForm
@@ -96,6 +97,10 @@ def invite(request):
     if not group.contains_user(request.user):
         raise PermissionDenied("Can't invite people to a group if you aren't in it")
     print "requesting user belongs to the group %s" % request.user
+
+    if Invite.objects.filter(inviter=request.user, created_date=datetime.today()).count() > 15:
+        return PermissionDenied("Maximum invites reached")
+
     inv = Invite.objects.create(email=request.POST['email'], group=group, inviter=request.user)
     print "Invite created [%s]" % inv
     send_invite_email(request, inv)
