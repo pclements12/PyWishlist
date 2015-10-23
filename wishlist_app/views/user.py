@@ -16,7 +16,7 @@ from wishlist_app.forms.UserUpdateForm import UserUpdateForm
 @login_required
 @require_POST
 def search(request, group_id=None):
-    users = do_search(request.POST['name'])
+    users = do_search(request.POST['name'])[:10]
     group = get_object_or_404(WishlistGroup, pk=group_id)
     return render(request, "wishlist_app/user/user_list.html", {"users": users, "group": group})
 
@@ -27,7 +27,7 @@ def do_search(name):
     print "searching for user by email..."
     emails = User.objects.filter(email__iexact=name)
     print "searching for user by username..."
-    users = User.objects.filter(username__icontains=name)
+    users = User.objects.filter(username__icontains=name).order_by('username')
     return users | emails
 
 

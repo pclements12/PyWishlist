@@ -32,14 +32,19 @@ def _notify_added_user(request, group, user, adder):
     msg_html = render_to_string('emails/add_member.html', {'group': group, 'user': user, 'adder': adder, 'url': url})
 
     print "generated html and plain text emails for delivery"
-    send_mail(
-        "You've been added to a Wishlist!",
-        msg_plain,
-        adder.email,
-        [user.email],
-        html_message=msg_html,
-        fail_silently=True
-    )
+    try:
+        send_mail(
+            "You've been added to a Wishlist!",
+            msg_plain,
+            adder.email,
+            [user.email],
+            html_message=msg_html,
+            fail_silently=True
+        )
+    except Exception:
+        # not sure why we need to do this...fails even when fail_silently=True
+        pass
+    return
 
 
 @login_required
