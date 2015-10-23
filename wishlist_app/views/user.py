@@ -130,6 +130,7 @@ def send_invite_email(request, inv):
         inv.inviter.email,
         [inv.email],
         html_message=msg_html,
+        fail_silently=True
     )
     print "invite sent from %s to %s" % (inv.inviter.email, inv.email)
 

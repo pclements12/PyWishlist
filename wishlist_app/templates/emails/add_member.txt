@@ -1,0 +1,7 @@
+You've been added to the Wishlist group '{{ group.name }}' by {{ adder.username }}!
+Check out the group:
+{{ url }}
+
+Happy Wishing!
+
+The Wishlist Team

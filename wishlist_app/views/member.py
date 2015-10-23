@@ -4,6 +4,9 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.core import urlresolvers
 
 
 @login_required
@@ -16,7 +19,27 @@ def add(request, group_id, user_id):
     if group.contains_user(user):
         raise ValidationError("User is already a member of this group")
     group.add_user(user)
+    _notify_added_user(request, group, user, request.user)
     return HttpResponse()
+
+
+def _notify_added_user(request, group, user, adder):
+    print "sending group add notification email"
+    path = urlresolvers.reverse("group_home", kwargs={'group_id': group.id})
+    url = request.build_absolute_uri(path)
+
+    msg_plain = render_to_string('emails/add_member.txt', {'group': group, 'user': user, 'adder': adder, 'url': url})
+    msg_html = render_to_string('emails/add_member.html', {'group': group, 'user': user, 'adder': adder, 'url': url})
+
+    print "generated html and plain text emails for delivery"
+    send_mail(
+        "You've been added to a Wishlist!",
+        msg_plain,
+        adder.email,
+        [user.email],
+        html_message=msg_html,
+        fail_silently=True
+    )
 
 
 @login_required
