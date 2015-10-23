@@ -23,8 +23,10 @@
 {% endblock %}
 
 {# Don't show what the user is getting if it's a birthday/registry list for them #}
-
 {% block group_items %}
+    {% if not assignment.wisher == request.user %}
+        {{block.super}}
+    {% endif %}
 {% endblock %}
 
 {% block member_links %}
