@@ -71,9 +71,10 @@ def register(request):
                 inv.save()
                 if 'activation_key' in request.session:
                     del request.session['activation_key']
-                print "invite scrubbed from db, key removed from session"
+                print "invite used, activation key removed from session"
+                return redirect("group_home", inv.group.id)
             except Invite.DoesNotExist:
-                print "Invalid or already used activation key. User not added to a group"
+                print "Invalid or already used invite activation key. User not added to a group"
         else:
             print "no invite for the user"
         return redirect("wishlists")
