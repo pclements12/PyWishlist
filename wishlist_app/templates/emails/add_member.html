@@ -11,18 +11,18 @@
             <div style="color:#fff;background-color:#337ab7;border-color:#337ab7;
             padding:10px 15px;border-top-left-radius:3px;border-top-right-radius:
             3px;border-bottom:1px solid transparent;">
-               Welcome!
+               New Group!
             </div>
             <div style="padding:15px;">
-                <p>You've been invited by {{ inv.inviter.username }} to join '{{ inv.group.name }}'--a Wishlist Group!</p>
-                {% if inv.group.description %}<blockquote style="padding:10px 20px;margin:0 0 20px;
-                font-size:17.5px;border-left:5px solid #eee;">{{ inv.group.description }}</blockquote>{% endif %}
+                <p>You've been added to the Wishlist group '{{ group.name }}' by {{ adder.username }}!</p>
+                {% if group.description %}<blockquote style="padding:10px 20px;margin:0 0 20px;
+                font-size:17.5px;border-left:5px solid #eee;">{{ group.description }}</blockquote>{% endif %}
                 <p/>
                 <p><a style="display: inline-block;padding: 6px 12px;margin-bottom: 0;text-decoration:none;
                 font-size: 14px;font-weight: 400;line-height: 1.42857143;text-align: center;white-space: nowrap;
                 vertical-align: middle;touch-action: manipulation;cursor: pointer;user-select: none;
                 background-image: none;border: 1px solid transparent;border-radius: 4px;color: #fff;
-                background-color: #337ab7;border-color: #2e6da4;" href="{{ url }}">Join!</a></p>
+                background-color: #337ab7;border-color: #2e6da4;" href="{{ url }}">Check it out!</a></p>
                 <p style="margin-top:35px">Happy Wishing!</p>
                 <p>The Wishlist Team</p>
             </div>
