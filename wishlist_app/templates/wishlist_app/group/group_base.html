@@ -1,7 +1,14 @@
 {% extends 'wishlist_app/base.html' %}
+
 {% block title %}    
     <title>Wishlist Group</title>
 {% endblock%}
+
+{% block head_scripts %}
+    <script type="text/javascript">
+        window.group_id = {{ group.id }};
+    </script>
+{% endblock %}
 
 {% block nav %}
     {% include 'wishlist_app/nav.html' %}

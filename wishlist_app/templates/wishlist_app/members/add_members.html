@@ -26,6 +26,7 @@
                 <input class="form-control" id="name" type="text" name="name"/>
                 <div id="search_error" style="display:none;" class="alert alert-danger"></div>
             </div>
+            <div id="user-list"></div>
         </div>
 
         <div class="panel-footer">
@@ -33,6 +34,23 @@
         </div>
     </div>
 </div>
-<div id="user-list"></div>
+<div class="col-lg-12">
+    <div class="panel panel-info results">
+        <div class="panel-heading">
+            <i class="fa fa-users fa-fw"></i> Invite a new user
+        </div>
+        <div class="panel-body">
+            <h4>Invite to join by email:</h4>
+            <input class="form-control" id="inviteEmail" type="email" placeholder="johndoe@mail.com"/>
+        </div>
+        {% if not users %}
+         <div class="panel-footer">
+            <button class="btn btn-primary" id="sendInviteBtn" data-url="{% url 'user_invite'%}"><i class="fa fa-envelope-o"></i> Invite</button>
+            <div id="invite_error" style="display:none;" class="alert alert-danger"></div>
+            <div id="invite_msg" style="display:none;" class="alert alert-info"></div>
+         </div>
+        {% endif%}
+    </div>
+</div>
 {% endblock %}
 
