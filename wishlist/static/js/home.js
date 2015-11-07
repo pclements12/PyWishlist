@@ -62,6 +62,7 @@
     //handle item claim/unclaim ajax calls
 
     function bindClaimListeners(){
+        console.log("rebind claim click listeners");
         //make sure we remove existing click listeners if we re-bind
         $("a.claim, a.unclaim").off("click");
         $("a.claim, a.unclaim").click(function(ev){
@@ -110,8 +111,12 @@
     function claimSuccess($anchor){
         //move item from available to claimed
         return function(response){
+            var $table = $anchor.closest("table");
+            var data = {element: $anchor, response: response, claim:true, index: $anchor.index()};
+            $table.trigger("item:beforeClaim", data);
             $anchor.closest("tr").remove()
             $("#claimed tbody").append("<tr>"+response+"</tr>")
+            $table.trigger("item:claimSuccess", data);
             bindClaimListeners();
             checkEmptyLists();
         }
@@ -119,8 +124,12 @@
 
     function unclaimSuccess($anchor){
         return function(response){
+            var $table = $anchor.closest("table");
+            var data = {element: $anchor, response: response, claim:true, index: $anchor.index()};
+            $table.trigger("item:beforeClaim", data);
             $anchor.closest("tr").remove()
             $("#available tbody").append("<tr>"+response+"</tr>")
+            $table.trigger("item:unclaimSuccess", data);
             bindClaimListeners();
             checkEmptyLists();
         }
@@ -130,6 +139,8 @@
          checkEmptyList($("#available"));
          checkEmptyList($("#claimed"));
     }
+
+     window.checkEmptyLists = checkEmptyLists;
 
     function checkEmptyList($table){
         var no_items = $table.find("tbody tr").length == 1;
