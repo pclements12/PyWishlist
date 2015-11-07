@@ -7,7 +7,7 @@
     {% endblock %}
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    {% load staticfiles %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script type="text/javascript"> window.csrf_token = "{{ csrf_token }}"; </script>
     {% block styles %}
@@ -16,13 +16,14 @@
     {% block head_scripts  %}
     {% endblock %}
 
-    {% load staticfiles %}
+
     {# Load bootstrap3 tag library #}
     {% load bootstrap3 %}
     <!-- Bootstrap Core CSS -->
     {% bootstrap_css %}
 
-    <script type="text/javascript" src="{% static 'js/lib/list.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/lib/jquery.sortable.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/lib/jquery.filterable.js' %}"></script>
 
     <!--custom css-->
     <link rel="stylesheet" href="{% static 'css/wishlist.css' %}"/>

@@ -37,60 +37,39 @@
         {% endif %}
         </tbody>
     </table>
-    <div id="{{ table_id }}_no_items" class="alert alert-warning" style="display:none;">
+    <div class="empty-search alert alert-warning" style="display:none;">
         <i class="fa fa-frown-o fa-fw"></i> No items match the search
     </div>
     <script type="text/javascript">
 
         (function(){
-            {% if available %}
-            var options = {
-                valueNames: [ 'name', 'wisher' ]
-            };
-            var available = true;
-            {% else %}
-            var options = {
-                valueNames: [ 'name', 'wisher', 'giver' ]
-            };
-            var available = false;
-            {% endif %}
+            var $container = $("#{{ table_id }}");
+            var $table = $container.find("table");
 
-            function checkEmpty(list){
-                return function() {
-                    $("#{{ table_id }}_no_items").toggle(list.visibleItems.length == 0);
-                }
+            function checkEmpty(){
+                $container.find(".no-items").toggle($table.find("tbody tr").length == 1)
+                $container.find(".empty-search").toggle($table.find("tbody tr:visible").length == 0);
             }
 
-            function handleListEdit(list){
-                return function(ev, data){
-                    console.log("re-initialize List object {{ table_id }}")
-                    list = new List("{{ table_id }}", options);
-                    bind();
-                }
+            function hideSearchWarning(){
+                $container.find(".empty-search").hide();
             }
 
-            function clearSearch(list){
-                return function(ev, data){
-                    console.log("clear list search {{ table_id }}", data);
-                    list.search();
-                }
+            function itemMove(ev){
+                checkEmpty();
             }
 
-            //make sortable/filterable lists
-            var list = new List("{{ table_id }}", options);
-            list.on('searchComplete', checkEmpty(list));
+            $table.sortable();
+            $table.filterable({
+                beforeFilter: hideSearchWarning,
+                filterInput: $container.find("input.search"),
+                afterFilter: checkEmpty
+            });
 
-            var handleEdit = handleListEdit(list);
-            var search = clearSearch(list);
+            $container.on("item:claimSuccess, item:unclaimSuccess", itemMove);
+        })();
 
-            function bind(){
-                console.log("rebind body listeners for claims");
-                $("body").off("item:beforeClaim item:claimSuccess item:unclaimSuccess");
-                $("body").on("item:beforeClaim", search);
-                $("body").on("item:claimSuccess item:unclaimSuccess", handleEdit);
-            }
-            bind();
-        }());
+
 
     </script>
 </div>
