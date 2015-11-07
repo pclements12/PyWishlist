@@ -21,3 +21,22 @@ a.no-link{
 i.fa-spin{
     animation: fa-spin 0.3s infinite linear
 }
+
+.table th{
+   -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.table .sort.asc:after{
+    content: " ▲";
+    font-size: 7px;
+}
+
+.table .sort.desc:after{
+    content: " ▼";
+    font-size: 7px;
+}

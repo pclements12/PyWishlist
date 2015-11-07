@@ -1,6 +1,6 @@
 <td>
-    <a class="text-left" href="{% url 'item_read' item.id %}">
-        <i class="fa fa-gift fa-fw"></i> {{ item.name }}
+    <a class="text-left name" href="{% url 'item_read' item.id %}">
+        <i class="fa fa-gift fa-fw"></i><span class="name"> {{ item.name }}</span>
     </a>
 </td>
 <td>
@@ -9,14 +9,14 @@
     {% endif %}
 </td>
 <td>
-    <a class="text-left" href="{% url 'user_wishlist' group.id item.wisher.id %}">
-        <i class="fa fa-user fa-fw"></i> {{ item.wisher.username }}
+    <a class="text-left wisher" href="{% url 'user_wishlist' group.id item.wisher.id %}">
+        <i class="fa fa-user fa-fw"></i><span class="wisher"> {{ item.wisher.username }}</span>
     </a>
 </td>
 {% if item.giver %}
 <td>
-    <a class="text-left" href="{% url 'user_wishlist' group.id item.giver.id %}">
-        <i class="fa fa-user fa-fw"></i> {{ item.giver.username }}
+    <a class="text-left giver" href="{% url 'user_wishlist' group.id item.giver.id %}">
+        <i class="fa fa-user fa-fw"></i><span class="giver"> {{ item.giver.username }}</span>
     </a>
 </td>
 {% endif %}

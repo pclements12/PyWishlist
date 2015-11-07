@@ -12,11 +12,11 @@
             <div class="panel-body">
                 <li class="list-group-item list-group-item-info">Available</li>
                 <div id="available">
-                    {% include 'wishlist_app/item/list.html' with items=available_items available=True %}
+                    {% include 'wishlist_app/item/list.html' with items=available_items available=True table_id='available_items' %}
                 </div>
                 <li class="list-group-item list-group-item-warning">Claimed</li>
                 <div id="claimed">
-                    {% include 'wishlist_app/item/list.html' with items=claimed_items available=False %}
+                    {% include 'wishlist_app/item/list.html' with items=claimed_items available=False table_id='claimed_items' %}
                 </div>
             </div>
         </div>
