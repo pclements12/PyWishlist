@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils import timezone
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 import uuid
 
 # Create your models here.
@@ -122,6 +122,20 @@ class WishlistGroup(models.Model):
         return self.name
 
 
+class Comment(models.Model):
+    created = models.DateTimeField(verbose_name="Created Date", auto_now_add=True)
+    modified = models.DateTimeField(verbose_name="Modified Date", auto_now=True)
+    commenter = models.ForeignKey(User, related_name="comment_commenter", null=False)
+    anonymous = models.BooleanField(default=False)
+    text = models.TextField()
+
+    def is_edited(self):
+        return self.created != self.modified
+
+    def __str__(self):
+        return "%s:'%s'" % (self.commenter.username, self.text)
+
+
 class Item(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
     description = models.TextField(default=None, null=True, blank=True)
@@ -131,6 +145,7 @@ class Item(models.Model):
     wisher = models.ForeignKey(User, related_name="wishlist_wisher")
     giver = models.ForeignKey(User, related_name="wishlist_giver", default=None, blank=True, null=True)
     claimed = models.BooleanField(default=False)
+    comments = models.ManyToManyField(Comment, through="ItemComment")
 
     def claim(self, user):
         self.giver = user
@@ -159,6 +174,16 @@ class Item(models.Model):
         if self.giver is None:
             return "%s (%s)" % (self.name, self.wisher.username)
         return "%s (%s<-%s)" % (self.name, self.wisher.username, self.giver.username)
+
+
+class ItemComment(models.Model):
+    item = models.ForeignKey(Item, related_name="itemcomment_item", null=False)
+    comment = models.ForeignKey(Comment, related_name="itemcomment_comment")
+
+
+class GroupComment(models.Model):
+    group = models.ForeignKey(WishlistGroup, related_name="groupcomment_group", null=False)
+    comment = models.ForeignKey(WishlistGroup, related_name="groupcomment_comment", null=False)
 
 
 class GroupMember(models.Model):
@@ -209,5 +234,4 @@ class RegistryAssignment(models.Model):
 
     class Meta:
         unique_together = ("group", "wisher")
-
 

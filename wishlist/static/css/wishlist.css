@@ -40,3 +40,12 @@ i.fa-spin{
     content: " ▼";
     font-size: 7px;
 }
+
+.comment-heading{
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.commenter{
+    background: #CCC;
+}

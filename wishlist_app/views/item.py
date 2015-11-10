@@ -1,6 +1,7 @@
 from wishlist_app.forms.ItemForm import ItemForm
+from wishlist_app.forms.CommentForm import CommentForm
 from django.shortcuts import render, get_object_or_404, redirect
-from wishlist_app.models import WishlistGroup, Item
+from wishlist_app.models import WishlistGroup, Item, Comment, ItemComment
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.core.exceptions import PermissionDenied
@@ -16,6 +17,10 @@ def create(request, group_id):
     if request.POST:
         print "posted values %s" % request.POST
         item_form = ItemForm(request.POST)
+        if not item_form.is_valid():
+             return render(request, 'wishlist_app/item/new_item.html',
+                      {'item_form': item_form,
+                       "group": group})
         item = item_form.save(commit=False)
         item.group = group
         item.wisher = request.user
@@ -37,6 +42,8 @@ def read(request, item_id):
     print "got item %s" % item
     context = {
         "item": item,
+        "comments": item.comments.order_by('created'),
+        "comment_form": CommentForm(),
         "assignment": item.group.get_assignment(request.user)
     }
     return render(request, "wishlist_app/item/item.html", context)
@@ -117,3 +124,28 @@ def unclaim(request, item_id):
     item.unclaim()
     print "item successfully claimed"
     return render(request, 'wishlist_app/item/item_row.html', {'item': item, 'group': item.group})
+
+
+@login_required
+@require_POST
+def comment(request, item_id):
+    item = get_object_or_404(Item, pk=item_id)
+    print "adding a coment to %s" % item
+    print "posted values %s" % request.POST
+    form = CommentForm(request.POST)
+    if not form.is_valid():
+        print "comment form is invalid"
+        return render(request, "wishlist_app/item/item.html", {
+            "item": item,
+            "comments": item.comments.order_by('created'),
+            "comment_form": form,
+            "assignment": item.group.get_assignment(request.user)
+        })
+    print "saving comment"
+    c = form.save(commit=False)
+    c.commenter = request.user
+    c.save()
+    ic = ItemComment(item=item, comment=c)
+    ic.save()
+    print "saved comment %s" % c
+    return redirect("item_read", item.id)

@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^item/(?P<item_id>[0-9]+)/delete/?$', item.delete, name="item_delete"),
     url(r'^item/(?P<item_id>[0-9]+)/claim/?$', item.claim, name="item_claim"),
     url(r'^item/(?P<item_id>[0-9]+)/unclaim/?$', item.unclaim, name="item_unclaim"),
+    url(r'^item/(?P<item_id>[0-9]+)/comment$', item.comment, name="item_comment"),
 
     # user
     url(r'^user$', user.profile, name="user_profile"),
