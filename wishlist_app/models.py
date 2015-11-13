@@ -127,6 +127,8 @@ class Comment(models.Model):
     modified = models.DateTimeField(verbose_name="Modified Date", auto_now=True)
     commenter = models.ForeignKey(User, related_name="comment_commenter", null=False)
     anonymous = models.BooleanField(default=False)
+    hide_from_wisher = models.BooleanField(default=False)
+
     text = models.TextField()
 
     def is_edited(self):

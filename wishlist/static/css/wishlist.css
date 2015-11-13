@@ -2,11 +2,16 @@
     color: #FFF
 }
 
-form.delete a{
+form.delete{
+    margin: 5px;
+    display:inline-block;
+}
+
+form.delete .delete{
     cursor: pointer
 }
 
-form.delete a.delete:hover{
+form.delete .delete:hover{
     color: red
 }
 
@@ -41,11 +46,24 @@ i.fa-spin{
     font-size: 7px;
 }
 
-.comment-heading{
+.comment-author{
     font-size: 14px;
     font-weight: bold;
 }
 
 .commenter{
-    background: #CCC;
+    background: #FFD;
+}
+
+.comment-controls{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.edit-comment{
+    cursor: pointer;
+}
+
+.edit-comment:hover{
+    color: blue;
 }

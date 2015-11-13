@@ -1,0 +1,11 @@
+{# Expects comment, comment_form as input #}
+<form action="{% url 'item_comment_edit' comment.id %}" method="post">
+    {% csrf_token %}
+    {% load bootstrap3 %}
+    {% bootstrap_form comment_form %}
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      <i class="fa fa-comment-o"></i> Post
+    </button>
+    {% endbuttons %}
+</form>

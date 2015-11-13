@@ -3,7 +3,7 @@
     //handle confirming deletes
     var currentDeleteForm = null;
 
-    cdefaults = {
+    var cdefaults = {
         title: "Delete",
         action: "delete",
         item: "this item"
@@ -19,7 +19,7 @@
     //{{title}}!?
     //"Are you sure you want to {{action}} {{item}}?
 
-    $("form.delete a.delete").click(function(ev){
+    $("form.delete .delete").click(function(ev){
         var $target = $(ev.target)
         currentDeleteForm = $target.closest("form")
         if(!currentDeleteForm){
@@ -44,9 +44,32 @@
         $modal.find(".confirmation-item").html(options.item)
     }
 
+     function populateModalError($modal, error){
+
+     }
+
     $("#deleteItemBtn").click(function(){
-        currentDeleteForm.submit();
-        currentDeleteForm = null;
+        if(currentDeleteForm.data("ajax") == true){
+            currentDeleteForm.ajaxSubmit();
+            currentDeleteForm.data("jqxhr").done(function(response){
+                currentDeleteForm.trigger("delete:success", {
+                    response:response,
+                    form: currentDeleteForm
+                });
+            }).fail(function(response){
+                currentDeleteForm.trigger("delete:fail", {
+                    response: response,
+                    form: currentDeleteForm
+                })
+            }).always(function(){
+                currentDeleteForm = null;
+                $(this).closest(".modal").modal("hide");
+            });
+        }
+        else{
+            currentDeleteForm.submit();
+            currentDeleteForm = null;
+        }
     })
 
     $("#cancelDeleteBtn").click(function(){

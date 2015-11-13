@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from .views import item, operations, group, user, member
+from .views import item, operations, group, user, member, comment
 
 urlpatterns = [
     # url(r'^accounts/login/$', operations.user_login, name="login"),
@@ -29,6 +29,10 @@ urlpatterns = [
     url(r'^item/(?P<item_id>[0-9]+)/claim/?$', item.claim, name="item_claim"),
     url(r'^item/(?P<item_id>[0-9]+)/unclaim/?$', item.unclaim, name="item_unclaim"),
     url(r'^item/(?P<item_id>[0-9]+)/comment$', item.comment, name="item_comment"),
+    url(r'^item/comment/(?P<comment_id>[0-9]+)/edit$', item.edit_comment, name="item_comment_edit"),
+
+    # comment
+    url(r'^comment/(?P<comment_id>[0-9]+)/delete', comment.delete, name="comment_delete"),
 
     # user
     url(r'^user$', user.profile, name="user_profile"),
