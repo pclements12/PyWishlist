@@ -1,0 +1,30 @@
+{# Hide comments from the wisher if hide_from_wisher is set to true #}
+{# expects as input item, comment #}
+{% if item.wisher != request.user or not comment.hide_from_wisher %}
+
+{%  if not comment.anonymous and request.user == comment.commenter  %}
+<div class="list-group-item comment commenter">
+{% else %}
+<div class="list-group-item comment">
+{% endif %}
+    {%  if comment.anonymous %}
+    <div class="list-group-item-heading text-muted"><span class="comment-author">Anonymous User</span>
+    {% else %}
+    <div class="list-group-item-heading "><span class="comment-author">{{ comment.commenter }}</span>
+    {% endif %}
+        {% if comment.is_edited %}<span class="text-muted"><i class="fa fa-asterisk"></i> edited</span>{% endif %}
+        <span class="pull-right text-muted">{{ comment.created|timesince }} ago</span>
+    </div>
+    <div class="list-group-item-text comment-text"> {{ comment.markup_text|safe }} </div>
+    <div class="list-group-item-text comment-controls">
+         {% if request.user == comment.commenter  %}
+            <span class="edit-comment" data-url="{% url 'item_comment_edit' comment.id %}"><i class="fa fa-edit" title="edit"></i><span> Edit</span></span>
+            <form data-ajax="true" class="delete" method="POST" action="{% url 'comment_delete' comment.id %}">
+                {% csrf_token %}
+                <span class="delete-comment delete" data-name="this comment"><i class="fa fa-trash" title="delete"></i> Delete</span>
+            </form>
+        {% endif %}
+    </div>
+    <div class="list-group-item-text edit-form" style="display:none;"></div>
+</div>
+{% endif %}

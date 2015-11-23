@@ -22,6 +22,7 @@
     <!-- Bootstrap Core CSS -->
     {% bootstrap_css %}
 
+    <script type="text/javascript" src="{% static 'js/lib/jquery.form.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/lib/jquery.sortable.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/lib/jquery.filterable.js' %}"></script>
 
@@ -51,7 +52,7 @@
                 </div>
                 <div class="modal-footer">
                     <button id="cancelDeleteBtn" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button id="deleteItemBtn" type="button" class="btn btn-danger"><i class="fa fa-trash"></i> <span class="confirmation-button">Delete</span></button>
+                    <button id="deleteItemBtn" type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-trash"></i> <span class="confirmation-button">Delete</span></button>
                 </div>
             </div>
         </div>

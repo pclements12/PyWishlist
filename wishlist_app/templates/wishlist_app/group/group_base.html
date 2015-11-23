@@ -6,7 +6,11 @@
 
 {% block head_scripts %}
     <script type="text/javascript">
+        {% if group %}
         window.group_id = {{ group.id }};
+        {% else %}
+        window.group_id = {{ item.group.id }};
+        {% endif %}
     </script>
 {% endblock %}
 

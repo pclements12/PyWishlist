@@ -49,4 +49,66 @@
             </div>
         </div>
     </div>
+    <div class="col-lg-12">
+         <div class="panel panel-primary">
+            <div class="panel-heading">
+                Comments
+            </div>
+            <div class="panel-body">
+                <div class="list-group">
+                    {% for comment in comments %}
+                       {% include 'wishlist_app/comment/item_comment.html' %}
+                    {% empty %}
+                    <div class="list-group-item">
+                        <i class="fa fa-frown-o"></i> No comments
+                    </div>
+                    {% endfor %}
+                    <div class="list-group-item">
+                        <div class="list-group-item-text">
+                            {% include 'wishlist_app/comment/new_comment_form.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </div>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            $(".comment-controls .edit-comment").on("click", getEditForm);
+
+            function getEditForm(event){
+                console.log("retrieving edit form");
+                //show loading
+                var target = $(event.target).closest(".edit-comment");
+                var comment = target.closest(".comment");
+                var editForm = comment.find(".edit-form");
+                if(editForm.is(":visible")){
+                    editForm.empty().hide();
+                    target.find("i.fa-edit").siblings("span").text("Edit");
+                    return;
+                }
+                comment.find("i.fa-edit").addClass("fa-spin");
+                //fetch form
+                $.ajax({
+                    url: target.data("url")
+                }).done(function(editForm){
+                    comment.find(".edit-form").hide().html(editForm).slideDown();
+                }).fail(function(response){
+                    //TODO: find a better place to put errors. This prevents re-openining the edit
+                    comment.find(".edit-form").html(response);
+                }).always(function(){
+                    comment.find("i.fa-edit").removeClass("fa-spin").siblings("span").text("Cancel Edit");
+                })
+            }
+
+            //handle deletes
+            $(".comment form").on("delete:success", handleDelete);
+
+            function handleDelete(event, data){
+                console.log("item deleted", data);
+                $(this).closest(".comment").remove();
+            }
+
+        })
+    </script>
 {% endblock %}

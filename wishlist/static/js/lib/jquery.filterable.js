@@ -10,7 +10,7 @@
 
         var prefs = $.extend({}, defaults, options);
 
-        prefs.filterInput.on("keyup afterpaste", filter.bind(this));
+        prefs.filterInput.on("keyup", filter.bind(this));
 
         function _extractValue($tr, cls){
             return $.trim($tr.find("span."+cls).text());
