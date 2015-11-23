@@ -67,3 +67,8 @@ i.fa-spin{
 .edit-comment:hover{
     color: blue;
 }
+
+.comment img {
+    max-width: 300px;
+    max-height: 300px;
+}

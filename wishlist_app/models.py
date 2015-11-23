@@ -4,6 +4,8 @@ from datetime import datetime
 from django.utils import timezone
 from django.core.exceptions import PermissionDenied, ValidationError
 import uuid
+import bleach
+
 
 # Create your models here.
 # Base module
@@ -136,6 +138,16 @@ class Comment(models.Model):
 
     def __str__(self):
         return "%s:'%s'" % (self.commenter.username, self.text)
+
+    allowed_tags = bleach.ALLOWED_TAGS + ['br', 'img']
+    allowed_attrs = dict(bleach.ALLOWED_ATTRIBUTES)
+    allowed_attrs['img'] = ["src", "title", "alt"]
+
+    def markup_text(self):
+        # convert new lines in comments to breaks
+        replaced = self.text.replace("\n", "<br/>")
+        # clean any potentially malicious html/scripts
+        return bleach.clean(replaced, tags=self.allowed_tags, attributes=self.allowed_attrs, strip=True)
 
 
 class Item(models.Model):

@@ -15,7 +15,7 @@
         {% if comment.is_edited %}<span class="text-muted"><i class="fa fa-asterisk"></i> edited</span>{% endif %}
         <span class="pull-right text-muted">{{ comment.created|timesince }} ago</span>
     </div>
-    <div class="list-group-item-text comment-text"> {{ comment.text }} </div>
+    <div class="list-group-item-text comment-text"> {{ comment.markup_text|safe }} </div>
     <div class="list-group-item-text comment-controls">
          {% if request.user == comment.commenter  %}
             <span class="edit-comment" data-url="{% url 'item_comment_edit' comment.id %}"><i class="fa fa-edit" title="edit"></i><span> Edit</span></span>
