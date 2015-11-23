@@ -134,7 +134,9 @@ class Comment(models.Model):
     text = models.TextField()
 
     def is_edited(self):
-        return self.created != self.modified
+        timediff = self.modified - self.created
+        # 30 seconds for ninja edits :)
+        return timediff.total_seconds() > 30
 
     def __str__(self):
         return "%s:'%s'" % (self.commenter.username, self.text)
