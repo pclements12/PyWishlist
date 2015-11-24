@@ -29,7 +29,7 @@ def home(request, group_id):
     available = Item.objects.filter(group=group, claimed=False).exclude(wisher=request.user)
     claimed = Item.objects.filter(group=group, claimed=True).exclude(wisher=request.user)
 
-    if group.is_secret_santa():
+    if assignment is not None and group.is_secret_santa():
         available = available.filter(wisher=assignment.wisher)
         claimed = claimed.filter(giver=request.user)
 
