@@ -68,7 +68,7 @@ i.fa-spin{
     color: blue;
 }
 
-.comment img {
-    max-width: 300px;
-    max-height: 300px;
+/* fix for member lists */
+.list-group-item > form.delete {
+    margin: 0px;
 }

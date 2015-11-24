@@ -1,29 +1,15 @@
 <div class="list-group">
     {% for member in members %}
-    {% if request.user == group.creator %}
-    <form class="delete" method="POST" action="{% url 'remove_user' member.id %}">
-    {% endif %}
-        <div class="row">
-            <div class="col-lg-12">
-                {% if member.user == request.user %}
-                <li class="text-left btn btn-default col-lg-11 col col-md-8 col-sm-8 col-xs-6">
-                    <i class="fa fa-user fa-fw"></i> {{ member.user.username }} {% if member.user.get_full_name %}({{ member.user.get_full_name }}){% endif %}
-                </li>
-                {% else %}
-                <a class="text-left btn btn-default col-lg-11 col col-md-8 col-sm-8 col-xs-6" href="{% url 'user_wishlist' member.group.id member.user.id %}">
-                    <i class="fa fa-user fa-fw"></i> {{ member.user.username }} {% if member.user.get_full_name %}({{ member.user.get_full_name }}){% endif %}
-                </a>
-                {% endif %}
-                {% if request.user == group.creator %}
-                    {% csrf_token %}
-                    <a class="btn btn-default col-lg-1 col-md-4 col-sm-4 col-xs-6 delete" data-title="Kick out" data-action="remove" data-name="{{ member.user.username }}">
-                        <i class="fa fa-trash"></i> Remove
-                    </a>
-                 {% endif %}
-            </div>
+    <div class="row">
+        <div class="col-lg-12">
+            {% if request.user == group.creator %}
+                {# admin layout classes #}
+                {% include "wishlist_app/group/wishlist_member.html" with wide='col-lg-10 col-md-9 col-sm-9 col-xs-8' skinny='col-lg-2 col-md-3 col-sm-3 col-xs-4' %}
+            {% else %}
+                {# regular user layout classes #}
+                {% include "wishlist_app/group/wishlist_member.html" with wide='col-lg-12 col-md-12 col-sm-12 col-xs-12' skinny='' %}
+            {% endif %}
         </div>
-    {% if request.user == group.creator %}
-    </form>
-    {% endif %}
+    </div>
     {% endfor %}
 </div>
