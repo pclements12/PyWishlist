@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils import timezone
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import PermissionDenied
 import uuid
 import bleach
 
@@ -29,6 +29,21 @@ class Role(DBObject):
     # user
     # role (admin, member)
     pass
+
+
+def full_name_display(self):
+    """
+        Monkey patch method for built in User object
+        if the full name is present, return surrounded by parens, otherwise return empty string
+    :return:
+    """
+    if self.get_full_name():
+        return "(%s)" % self.get_full_name()
+    return ""
+
+
+# monkey patch in a display method for user names
+User.get_full_name_display = full_name_display
 
 
 class WishlistGroup(models.Model):

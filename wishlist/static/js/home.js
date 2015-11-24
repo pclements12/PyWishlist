@@ -1,5 +1,8 @@
  $(function(){
 
+     //for comment added images, make them responsive
+     $("img").addClass("img-responsive");
+
     //handle confirming deletes
     var currentDeleteForm = null;
 
