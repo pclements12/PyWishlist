@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils import timezone
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 import uuid
 import bleach
 
@@ -126,6 +127,21 @@ class WishlistGroup(models.Model):
                 return None
         return None
 
+    def has_assignments(self):
+        if self.is_secret_santa():
+            try:
+                ass = SecretSantaAssignment.objects.filter(~Q(giver=None), group=self)
+                return len(ass.all()) > 0
+            except SecretSantaAssignment.DoesNotExist:
+                return False
+        elif self.is_registry():
+            try:
+                ass = RegistryAssignment.objects.filter(group=self)
+                return len(ass.all()) > 0
+            except RegistryAssignment.DoesNotExist:
+                return False
+        return False
+
     def is_regular(self):
         return self.type == self.REGULAR
 
@@ -247,7 +263,7 @@ class Invite(models.Model):
 class SecretSantaAssignment(models.Model):
     group = models.ForeignKey(WishlistGroup, related_name="santa_group", null=False, on_delete=models.CASCADE)
     wisher = models.ForeignKey(User, related_name="santa_wisher", null=False)
-    giver = models.ForeignKey(User, related_name="santa_giver", null=True, default=None)
+    giver = models.ForeignKey(User, related_name="santa_giver", null=True, default=None, blank=True)
 
     def __str__(self):
         return "Group: %s, Wisher: %s, Giver: %s" % (self.group, self.wisher, self.giver)

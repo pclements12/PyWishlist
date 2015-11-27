@@ -11,6 +11,7 @@ class SecretSantaForm(ModelForm):
         super(ModelForm, self).__init__(*args, **kwargs)
         # filter the users by this group's users
         if self.instance and self.instance.pk:
+            self.fields['giver'].required = False
             self.fields['giver'].queryset = self.instance.group.users
             self.fields['wisher'].widget.attrs['disabled'] = True
             self.fields['wisher'].required = False

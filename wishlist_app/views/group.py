@@ -6,7 +6,7 @@ from wishlist_app.models import GroupMember, WishlistGroup, Item, User, SecretSa
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 
 
 def get_home_template(group):
@@ -17,30 +17,23 @@ def get_home_template(group):
     return "wishlist_app/group/group_home.html"
 
 
-@login_required(login_url="login")
+@login_required
 @require_GET
 def home(request, group_id):
     group = get_object_or_404(WishlistGroup, pk=group_id)
     if not group.contains_user(request.user):
         return redirect("wishlists")
 
-    assignment = group.get_assignment(request.user)
-
-    available = Item.objects.filter(group=group, claimed=False).exclude(wisher=request.user)
-    claimed = Item.objects.filter(group=group, claimed=True).exclude(wisher=request.user)
-
-    if assignment is not None and group.is_secret_santa():
-        available = available.filter(wisher=assignment.wisher)
-        claimed = claimed.filter(giver=request.user)
+    items = get_group_filtered_items(request.user, group)
 
     context = {
         "wishes": Item.objects.filter(group=group, wisher=request.user).order_by("name"),
         "gives": Item.objects.filter(group=group, giver=request.user).order_by("name"),
         "group": group,
         "members": group.members(),
-        "assignment": assignment,
-        "available_items": available,
-        "claimed_items": claimed
+        "assignment": group.get_assignment(request.user),
+        "available_items": items["available"],
+        "claimed_items": items["claimed"]
     }
     return render(request, get_home_template(group), context)
 
@@ -120,20 +113,13 @@ def user_wishlist(request, group_id, wisher_id):
 
     print "Wisher: %s: %s" % (wisher_id, wisher.username)
 
-    assignment = group.get_assignment(request.user)
-
-    available = Item.objects.filter(group=group, wisher=wisher, claimed=False)
-    claimed = Item.objects.filter(group=group, wisher=wisher, claimed=True)
-
-    if group.is_secret_santa():
-        available = available.filter(wisher=assignment.wisher)
-        claimed = claimed.filter(giver=request.user)
+    items = get_group_filtered_items(request.user, group)
 
     return render(request, "wishlist_app/group/user_wishlist.html", {
         "group": group,
         "wisher": wisher,
-        "available_items": available,
-        "claimed_items": claimed,
+        "available_items": items["available"],
+        "claimed_items": items["claimed"],
         "assignment": group.get_assignment(request.user)
     })
 
@@ -145,7 +131,7 @@ def assignments(request, group_id):
         raise PermissionDenied("Must be group creator to make assignments")
     if group.type == WishlistGroup.REGULAR:
         raise PermissionDenied("Group type doesn't support assignments")
-    elif group.type == WishlistGroup.SECRET_SANTA:
+    elif group.is_secret_santa():
         print "Secret Santa"
         # post
         if request.POST:
@@ -153,7 +139,7 @@ def assignments(request, group_id):
         # get
         else:
             return _get_secret_santa_assignments(request, group)
-    elif group.type == WishlistGroup.REGISTRY:
+    elif group.is_registry():
         print "Registry/bday"
         # post
         if request.POST:
@@ -161,8 +147,8 @@ def assignments(request, group_id):
         # get
         else:
             return _get_registry_assignments(request, group)
-
-    return HttpResponse("assignments")
+    # regular group doesn't have assignments
+    return Http404
 
 
 def _get_registry_assignments(request, group):
@@ -220,3 +206,25 @@ def _post_secret_santa_assignments(request, group):
     assignments = formset.save()
     return redirect("group_home", group.id)
 
+
+def get_group_filtered_items(user, group):
+    assignment = group.get_assignment(user)
+    available = Item.objects.filter(group=group, claimed=False).exclude(wisher=user)
+    claimed = Item.objects.filter(group=group, claimed=True).exclude(wisher=user)
+
+    if group.is_secret_santa():
+        if assignment is not None:
+            available = available.filter(wisher=assignment.wisher)
+            claimed = claimed.filter(giver=user)
+        elif group.has_assignments():
+            # if assignments have been made and someone doesn't have one, show them all wishes like a regular group
+            pass
+        else:
+            # don't show items in ss when no assignments have been made yet
+            available = available.none()
+            claimed = claimed.none()
+
+    return dict({
+        "available": available,
+        "claimed": claimed,
+    })
