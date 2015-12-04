@@ -15,10 +15,9 @@
 </td>
 {% if item.giver %}
 <td>
-{# TODO what do to about giver fields? #}
-{#    <a class="text-left giver" href="{% url 'user_wishlist' group.id item.giver.id %}">#}
-{#        <i class="fa fa-user fa-fw"></i><span class="giver"> {{ item.giver.username }}</span>#}
-{#    </a>#}
+    <a class="text-left giver" href="{% url 'user_wishlist' group.id item.giver.id %}">
+        <i class="fa fa-user fa-fw"></i><span class="giver"> {{ item.giver.username }}</span>
+    </a>
 </td>
 {% endif %}
 {% if not item.claimed %}

@@ -1,0 +1,14 @@
+{% if items %}
+    {% for item in items %}
+        <a class="list-group-item" href="{% url 'item_read' item.id %}"><i class="fa fa-gift fa-fw"></i>{{ item.name }}
+           {% if item.quantity > 1 %}
+            <span class="text-muted small badge"><em>{{ item.quantity }}</em>
+            </span>
+            {% endif %}
+        </a>
+    {% endfor %}
+{% else %}
+     <li class="list-group-item">
+         <i class="fa fa-frown-o fa-fw"></i>No items
+     </li>
+{% endif %}

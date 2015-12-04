@@ -1,16 +1,19 @@
 {% extends 'wishlist_app/base.html' %}
+
 {% block title %}    
-    <title>Wishlist Items</title>
+    <title>My Wishlist Items</title>
 {% endblock%}
 
-{% block header %}
-    {% if item %}
-        <h2>{{ item.name }}</h2>
-    {% endif %}
+{% block head_scripts %}
+    <script type="text/javascript">
+    </script>
 {% endblock %}
 
-{% block footer %}
-    {% if item %}
-     <a class="btn btn-blk btn-md btn-primary" href="{% url 'group_home' item.group.id %}">Back to Group</a>
+{% block nav %}
+    {% include 'wishlist_app/nav.html' %}
+{% endblock %}
+
+{% block header %}
+    {% if group %}
     {% endif %}
 {% endblock %}

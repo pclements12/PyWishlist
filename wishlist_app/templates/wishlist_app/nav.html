@@ -19,6 +19,10 @@
                 </ul>
             </li>
             <li class="divider"></li>
+            <li role="presentation">
+                <a href="{% url 'my_wishlist' %}"><i class="fa fa-users"></i> My Wishlist</a>
+            </li>
+            <li class="divider"></li>
             <li role="presentation" class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-users fa-fw"></i> My Groups<span class="caret"></span>
@@ -39,14 +43,12 @@
                     </li>
                 </ul>
             </li>
+            {% if group %}
             <li class="divider"></li>
             <li role="presentation">
-                {% if group %}
                 <a href="{% url 'group_home' group.id %}"><i class="fa fa-users"></i> {{ group.name }}</a>
-                {% elif item %}
-                <a href="{% url 'group_home' item.group.id %}"><i class="fa fa-users"></i> {{ item.group.name }}</a>
-                {% endif %}
             </li>
+            {% endif %}
         {% else %}
             <li>
                 <a href="{% url 'login' %}"><i class="fa fa-sign-in fa-fw"></i> Login</a>
