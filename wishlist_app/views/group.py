@@ -118,8 +118,8 @@ def user_wishlist(request, group_id, wisher_id):
     return render(request, "wishlist_app/group/user_wishlist.html", {
         "group": group,
         "wisher": wisher,
-        "available_items": items["available"],
-        "claimed_items": items["claimed"],
+        "available_items": items["available"].filter(wisher=wisher),
+        "claimed_items": items["claimed"].filter(wisher=wisher),
         "assignment": group.get_assignment(request.user)
     })
 
