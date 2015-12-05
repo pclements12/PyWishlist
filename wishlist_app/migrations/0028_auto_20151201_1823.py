@@ -25,6 +25,12 @@ def data_migration(apps, schema_editor):
         item_comment.save()
 
 
+def backwards_migration(apps, schema_editor):
+    print "beginning backwards migration"
+    for group_item in GroupItem.objects.all():
+        group_item.item.group = group_item.group
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -32,5 +38,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(data_migration),
+        migrations.RunPython(data_migration, backwards_migration),
     ]
