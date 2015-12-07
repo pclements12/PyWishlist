@@ -37,7 +37,7 @@ urlpatterns = [
     # url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/delete/?$',
     #     group_item.delete, name="group_item_delete"),
     url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/claim/?$',
-        group_item.unclaim, name="group_item_claim"),
+        group_item.claim, name="group_item_claim"),
     url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/unclaim/?$',
         group_item.unclaim, name="group_item_unclaim"),
 

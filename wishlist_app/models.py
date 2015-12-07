@@ -8,28 +8,12 @@ import uuid
 import bleach
 
 
-# Create your models here.
-# Base module
-
-
 class DBObject(models.Model):
     created_date = models.DateTimeField(default=datetime.now)
     modified_date = models.DateTimeField(default=datetime.now)
-    created_by = models.ForeignKey(User, related_name='%(class)s_created_by', default=None, blank=True, null=True)
-    modified_by = models.ForeignKey(User, related_name='%(class)s_modified_by', default=None, blank=True, null=True)
 
     class Meta:
         abstract = True
-
-
-# Do we extend user to have some custom attributes? like display name, maybe an avatar?
-
-
-class Role(DBObject):
-    # wishlist group
-    # user
-    # role (admin, member)
-    pass
 
 
 def full_name_display(self):
@@ -42,9 +26,15 @@ def full_name_display(self):
         return "(%s)" % self.get_full_name()
     return ""
 
-
+# user methods
 # monkey patch in a display method for user names
 User.get_full_name_display = full_name_display
+
+
+def get_user_groups(self):
+    return GroupMember.objects.filter(user=self).select_related("group")
+
+User.get_groups = get_user_groups
 
 
 class Item(models.Model):
@@ -55,6 +45,8 @@ class Item(models.Model):
     wisher = models.ForeignKey(User, related_name="wishlist_wisher")
     giver = models.ForeignKey(User, related_name="wishlist_giver", default=None, blank=True, null=True)
     claimed = models.BooleanField(default=False)
+
+    groups = models.ManyToManyField('WishlistGroup', through='GroupItem')
 
     def claim(self, user):
         self.giver = user
@@ -68,16 +60,28 @@ class Item(models.Model):
 
     def check_claim(self, user):
         if self.giver is not None:
+            print "Item has already been claimed"
             raise PermissionDenied("Item has already been claimed")
         if user == self.wisher:
+            print "Can't claim own item"
             raise PermissionDenied("User's can't claim their own items")
-        assignment = self.group.get_assignment(user)
-        if self.group.is_secret_santa():
-            if assignment.wisher != self.wisher:
-                raise PermissionDenied("User must be the wisher's secret santa to claim their items")
-        elif self.group.is_registry():
-            if self.wisher != assignment.wisher:
-                raise PermissionDenied("Can only claim items of the registry's target user")
+        # check if item is in a group that the user belongs to
+
+        user_in_group = False
+        user_groups = user.get_groups().all()
+        for grp in self.groups.all():
+            print "Item group %s" % grp
+            for user_grp in user_groups:
+                print "User group %s" % user_grp
+                if grp.id == user_grp.id:
+                    print "User and item group match"
+                    user_in_group = True
+                    break
+            if user_in_group:
+                break
+        if not user_in_group:
+            print "User is not in a group with this item"
+            raise PermissionDenied("User is not in a group that this item belongs to")
 
     def __str__(self):
         if self.giver is None:

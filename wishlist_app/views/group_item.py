@@ -72,20 +72,23 @@ def remove_item(request, group_item_id):
 def claim(request, group_id, item_id):
     print "claiming item %s" % item_id
     item = get_object_or_404(Item, pk=item_id)
+    group = get_object_or_404(WishlistGroup, pk=group_id)
     item.check_claim(request.user)
     print "got item %s" % item
     print "updating item %s for claim by %s" % (item, request.user)
     item.claim(request.user)
     print "item successfully claimed"
+
     # group id is used for the user wishlist links in the row
-    return render(request, 'wishlist_app/item/item_row.html', {'item': item, 'group': item.group})
+    return render(request, 'wishlist_app/item/item_row.html', {'item': item, 'group': group})
 
 
 @login_required
 @require_POST
-def unclaim(request, item_id):
+def unclaim(request, group_id, item_id):
     print "unclaiming item %s" % item_id
     item = get_object_or_404(Item, pk=item_id)
+    group = get_object_or_404(WishlistGroup, pk=group_id)
     if item.giver != request.user:
         raise PermissionDenied("Item must be claimed by user to be unclaimed")
     if request.user == item.wisher:
@@ -95,7 +98,7 @@ def unclaim(request, item_id):
     item.unclaim()
     print "item successfully unclaimed"
     # group id is used for the user wishlist links in the row?
-    return render(request, 'wishlist_app/item/item_row.html', {'item': item, 'group': item.group})
+    return render(request, 'wishlist_app/item/item_row.html', {'item': item, 'group': group})
 
 
 @login_required
