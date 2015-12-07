@@ -4,14 +4,102 @@
 {% endblock%}
 {% block body %}
     <h4>Assign the giver for each wisher in the group</h4>
+    <button id="random" class="btn btn-primary">Randomize</button>
+    <div id="hidden" class="row" style="display:none">
+        <div class="col-xs-12" style="padding:10px;">
+            <span >Random assignments set, hit save to finalize </span>
+        </div>
+        <div class="col-xs-12" style="padding:10px;">
+            <button id="show" class="btn">Show Hidden Assignments</button>
+        </div>
+    </div>
     <form method="post" action="{% url 'group_assignments' group.id %}">
         {% csrf_token %}
         {% load bootstrap3 %}
+        <div id="assignments">
         {% bootstrap_formset formset %}
+        </div>
         {% buttons %}
             <button type="submit" class="btn btn-primary">
               <i class="fa fa-plus-circle"></i> Save
             </button>
         {% endbuttons %}
     </form>
+    <script type="text/javascript">
+        (function(){
+            $(function(){
+                $("#random").on("click", random_assign);
+                $("#show").on("click", function(){
+                    $("#hidden").hide();
+                    $("#assignments").show();
+                })
+            })
+            var names = [];
+            function random_assign() {
+                //hide the selects so we don't know the assignments
+                $("#hidden").show();
+                $("#assignments").hide();
+                //get all of the member id's available
+                var rec_ids = [];
+                var give_ids = [];
+                $(".form-group:even select").each(function (i, el) {
+                    var $el = $(el);
+                    if (parseInt($el.val(), 10) >= 0) {
+                        rec_ids.push($el.val());
+                        names.push($el.find(":selected").text());
+                    }
+                });
+                give_ids = rec_ids.concat();
+                //console.log("giver ids", give_ids);
+                var attempts = 0;
+                var $selects = $(".form-group:odd select");
+                while (!shuffle_select($selects,give_ids, rec_ids)) {
+                    console.log("attempt", ++attempts);
+                }
+            }
+
+            function shuffle_select($selects, give_ids, rec_ids){
+                rec_ids = shuffle(rec_ids);
+                //console.log("randomized choice_ids", rec_ids);
+                //find the select for member i, and set value to member = i + 1
+                //effectively a chain with the random array of choices from one to the next (prevents matching to oneself)
+                for(var i = 0; i < rec_ids.length; i++){
+                    var idx1 = i;
+                    var idx2 = i+1;
+                    if( i == rec_ids.length - 1){
+                        idx2 = 0;
+                    }
+                    if(give_ids[idx1] == rec_ids[idx2]){
+                        //if assigned receiver and giver are the same, reshuffle, try again
+                        return false;
+                    }
+                    //console.log("People", names[idx1], "->", names[idx2]);
+                    $selects.eq(idx1).val(rec_ids[idx2]);
+                    //console.log("idx1", idx1, "idx2", idx2);
+                }
+                return true;
+            }
+
+            function shuffle(array) {
+              var currentIndex = array.length, temporaryValue, randomIndex ;
+
+              // While there remain elements to shuffle...
+              while (0 !== currentIndex) {
+
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+
+                // And swap it with the current element.
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+              }
+
+              return array;
+            }
+        }())
+
+    </script>
+
 {% endblock %}

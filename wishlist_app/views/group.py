@@ -118,8 +118,8 @@ def user_wishlist(request, group_id, wisher_id):
     return render(request, "wishlist_app/group/user_wishlist.html", {
         "group": group,
         "wisher": wisher,
-        "available_items": items["available"],
-        "claimed_items": items["claimed"],
+        "available_items": items["available"].filter(wisher=wisher),
+        "claimed_items": items["claimed"].filter(wisher=wisher),
         "assignment": group.get_assignment(request.user)
     })
 
@@ -212,17 +212,17 @@ def get_group_filtered_items(user, group):
     available = group.items.filter(claimed=False).exclude(wisher=user)
     claimed = group.items.filter(claimed=True).exclude(wisher=user)
 
-    if group.is_secret_santa():
-        if assignment is not None:
-            available = available.filter(wisher=assignment.wisher)
-            claimed = claimed.filter(giver=user)
-        elif group.has_assignments():
-            # if assignments have been made and someone doesn't have one, show them all wishes like a regular group
-            pass
-        else:
-            # don't show items in ss when no assignments have been made yet
-            available = available.none()
-            claimed = claimed.none()
+    # if group.is_secret_santa():
+    #     if assignment is not None:
+    #         available = available.filter(wisher=assignment.wisher)
+    #         claimed = claimed.filter(giver=user)
+    #     elif group.has_assignments():
+    #         # if assignments have been made and someone doesn't have one, show them all wishes like a regular group
+    #         pass
+    #     else:
+    #         # don't show items in ss when no assignments have been made yet
+    #         available = available.none()
+    #         claimed = claimed.none()
 
     return dict({
         "available": available,
