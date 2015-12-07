@@ -1,17 +1,17 @@
 from wishlist_app.models import Item, WishlistGroup, GroupItem
-from django.forms import ModelForm, ModelMultipleChoiceField
+from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple
 
 
 class ItemForm(ModelForm):
 
     # Representing the many to many related field in Pizza
-    groups = ModelMultipleChoiceField(queryset=WishlistGroup.objects.all())
+    groups = ModelMultipleChoiceField(queryset=WishlistGroup.objects.all(), widget=CheckboxSelectMultiple)
 
     # Overriding __init__ here allows us to provide initial
     # data for 'groups' field
     def __init__(self, *args, **kwargs):
         # Only in case we build the form from an instance
-        # (otherwise, 'toppings' list should be empty)
+        # (otherwise, 'groups' list should be empty)
         if 'instance' in kwargs:
             # We get the 'initial' keyword argument or initialize it
             # as a dict if it didn't exist.

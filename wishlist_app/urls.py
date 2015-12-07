@@ -27,19 +27,14 @@ urlpatterns = [
     url(r'^item/(?P<item_id>[0-9]+)/?$', item.read, name="item_read"),
     url(r'^item/(?P<item_id>[0-9]+)/edit/?$', item.update, name="item_update"),
     url(r'^item/(?P<item_id>[0-9]+)/delete/?$', item.delete, name="item_delete"),
-    url(r'^item/(?P<item_id>[0-9]+)/claim/?$', item.claim, name="item_claim"),
-    url(r'^item/(?P<item_id>[0-9]+)/unclaim/?$', item.unclaim, name="item_unclaim"),
 
     # group item operations (from a group)
-    url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/?$', group_item.read, name="group_item_read"),
-    # url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/edit/?$',
-    #     group_item.update, name="group_item_update"),
-    # url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/delete/?$',
-    #     group_item.delete, name="group_item_delete"),
+    # need a group create url so that a group can be defaulted...
     url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/claim/?$',
         group_item.claim, name="group_item_claim"),
     url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/unclaim/?$',
         group_item.unclaim, name="group_item_unclaim"),
+    url(r'^group/(?P<group_id>[0-9]+)/items/', group_item.list, name='group_items'),
 
     # comment
     url(r'^comment/(?P<comment_id>[0-9]+)/delete', comment.delete, name="comment_delete"),

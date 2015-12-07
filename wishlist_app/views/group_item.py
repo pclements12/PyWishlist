@@ -5,25 +5,24 @@ from wishlist_app.models import WishlistGroup, Item, Comment, ItemComment, Group
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.core.exceptions import PermissionDenied, ValidationError
+from wishlist_app.forms.GroupItemsForm import GroupItemsForm
 
 
 @login_required
-@require_GET
-def read(request, group_id, item_id):
-    print "looking for item %s" % item_id
-    item = get_object_or_404(Item, pk=item_id)
+@require_http_methods(["GET", "POST"])
+def list(request, group_id):
     group = get_object_or_404(WishlistGroup, pk=group_id)
-    group_item = get_object_or_404(GroupItem, group=group, item=item)
-    print "got item %s" % item
-    context = {
-        "item": item,
-        "comments": group_item.comments.order_by('created'),
-        "comment_form": CommentForm(),
-        "action_url": "item_comment",
-        "action_id": item.id,
-        "assignment": group.get_assignment(request.user)
-    }
-    return render(request, "wishlist_app/item/item.html", context)
+    if request.POST:
+        form = GroupItemsForm(request.POST, instance=group, user=request.user)
+        if form.is_valid():
+            group_items = form.save()
+            return redirect("group_home", group.id)
+    else:
+        form = GroupItemsForm(instance=group, user=request.user)
+    return render(request, "wishlist_app/group/group_list.html", {
+        "form": form,
+        "group": group
+    })
 
 
 # creating an item within a group automatically adds the group_item associating them
@@ -51,7 +50,6 @@ def create(request, group_id):
         return render(request, 'wishlist_app/item/new_item.html',
                       {'item_form': item_form,
                        "group": group})
-
 
 @login_required
 @require_POST

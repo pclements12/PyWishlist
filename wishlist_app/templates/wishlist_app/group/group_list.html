@@ -1,0 +1,17 @@
+{% extends 'wishlist_app/group/group_base.html' %}
+{% block title %}
+    <title>{{ group.name }}</title>
+{% endblock%}
+{% block body %}
+    <h4>Add items to {{ group.name }}</h4>
+    <form method="post" action="{% url 'group_items' group.id %}">
+        {% csrf_token %}
+        {% load bootstrap3 %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+              <i class="fa fa-save"></i> Save
+            </button>
+        {% endbuttons %}
+    </form>
+{% endblock %}
