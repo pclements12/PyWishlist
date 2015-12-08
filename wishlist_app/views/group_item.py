@@ -58,10 +58,13 @@ def read(request, group_id, item_id):
     print "looking for item %s" % item_id
     item = get_object_or_404(Item, pk=item_id)
     group = get_object_or_404(WishlistGroup, pk=group_id)
+    group_item = GroupItem.objects.get(item=item, group=group)
     print "got item %s" % item
     context = {
         "group": group,
         "item": item,
+        "comments": group_item.comments.order_by('created'),
+        "comment_form": CommentForm(),
         "action_url": "item_comment",
         "action_id": item.id
     }
@@ -118,8 +121,11 @@ def unclaim(request, group_id, item_id):
 
 @login_required
 @require_POST
-def comment(request, item_id):
+def comment(request, group_id, item_id):
     item = get_object_or_404(Item, pk=item_id)
+    group = get_object_or_404(WishlistGroup, pk=group_id)
+    group_item = GroupItem.objects.get(item=item, group=group)
+
     print "adding a coment to %s" % item
     print "posted values %s" % request.POST
     form = CommentForm(request.POST)
@@ -128,8 +134,7 @@ def comment(request, item_id):
         return render(request, "wishlist_app/item/item.html", {
             "item": item,
             "comments": item.comments.order_by('created'),
-            "comment_form": form,
-            "assignment": item.group.get_assignment(request.user)
+            "comment_form": form
         })
     print "saving comment"
     c = form.save(commit=False)
@@ -140,14 +145,13 @@ def comment(request, item_id):
         return render(request, "wishlist_app/item/item.html", {
             "item": item,
             "comments": item.comments.order_by('created'),
-            "comment_form": form,
-            "assignment": item.group.get_assignment(request.user)
+            "comment_form": form
         })
     c.save()
-    ic = ItemComment(item=item, comment=c)
+    ic = ItemComment(group_item=group_item, comment=c)
     ic.save()
     print "saved comment %s" % c
-    return redirect("item_read", item.id)
+    return redirect("group_item_read", group.id,  item.id)
 
 
 @login_required
@@ -158,7 +162,7 @@ def edit_comment(request, comment_id):
     print "Got Comment %s" % c
     ic = get_object_or_404(ItemComment, comment=c)
     print "Got item-comment"
-    item = ic.item
+    item = ic.group_item.item
     print "Got item %s" % item
     if not request.user == c.commenter:
         raise PermissionDenied("Can't edit a comment you didn't write")
@@ -171,14 +175,13 @@ def edit_comment(request, comment_id):
             return render(request, "wishlist_app/item/item.html", {
                 "item": item,
                 "comments": item.comments.order_by('created'),
-                "comment_form": form,
-                "assignment": item.group.get_assignment(request.user)
+                "comment_form": form
             })
         else:
             print "comment form valid"
             c = form.save()
             print "comment update saved: %s" % c
-            return redirect("item_read", item.id)
+            return redirect("group_item_read", ic.group_item.group.id, item.id)
     else:
         print "request for a comment form bound to %s" % c
         form = CommentForm(instance=c)

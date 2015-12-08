@@ -93,7 +93,7 @@
         $("a.claim, a.unclaim").off("click");
         $("a.claim, a.unclaim").click(function(ev){
             ev.preventDefault();
-            var $anchor = $(ev.target);
+            var $anchor = $(ev.target).closest("a");
             //parse item id and url from event/target
             var url = $anchor.data("url");
             //show loading icon

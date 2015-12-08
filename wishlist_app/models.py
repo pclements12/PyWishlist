@@ -16,6 +16,13 @@ class DBObject(models.Model):
         abstract = True
 
 
+def follow_through(queryset, field):
+    items = []
+    for item in queryset.all():
+        items.append(getattr(item, field))
+    return items
+
+
 def full_name_display(self):
     """
         Monkey patch method for built in User object
@@ -32,9 +39,10 @@ User.get_full_name_display = full_name_display
 
 
 def get_user_groups(self):
-    return GroupMember.objects.filter(user=self).select_related("group")
+    members = GroupMember.objects.filter(user=self).prefetch_related("group")
+    return follow_through(members, "group")
 
-User.get_groups = get_user_groups
+User.get_group_list = get_user_groups
 
 
 class Item(models.Model):
@@ -68,11 +76,11 @@ class Item(models.Model):
         # check if item is in a group that the user belongs to
 
         user_in_group = False
-        user_groups = user.get_groups().all()
+        user_groups = user.get_group_list()
         for grp in self.groups.all():
-            print "Item group %s" % grp
+            print "Item group %s" % grp.id
             for user_grp in user_groups:
-                print "User group %s" % user_grp
+                print "User group %s" % user_grp.id
                 if grp.id == user_grp.id:
                     print "User and item group match"
                     user_in_group = True

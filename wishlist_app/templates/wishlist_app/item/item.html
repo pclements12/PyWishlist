@@ -36,4 +36,7 @@
             </div>
         </div>
     </div>
+    {% if comments %}
+        {% include "wishlist_app/comment/group_item_comments.html" %}
+    {% endif %}
 {% endblock %}

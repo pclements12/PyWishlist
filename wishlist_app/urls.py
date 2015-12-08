@@ -30,7 +30,7 @@ urlpatterns = [
 
     # group item operations (from a group)
     url(r'^group/(?P<group_id>[0-9]+)/item/$', group_item.create, name="group_item_create"),
-    url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/?$', item.read, name="group_item_read"),
+    url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/?$', group_item.read, name="group_item_read"),
     url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/claim/?$',
         group_item.claim, name="group_item_claim"),
     url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/unclaim/?$',
@@ -40,8 +40,8 @@ urlpatterns = [
     # comment
     url(r'^comment/(?P<comment_id>[0-9]+)/delete', comment.delete, name="comment_delete"),
     url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/comment$',
-        group_item.comment, name="item_comment_create"),
-    url(r'^group/(?P<group_id>[0-9]+)/item/comment/(?P<comment_id>[0-9]+)/edit$',
+        group_item.comment, name="item_comment"),
+    url(r'^comment/(?P<comment_id>[0-9]+)/edit$',
         group_item.edit_comment, name="item_comment_edit"),
 
     # user
