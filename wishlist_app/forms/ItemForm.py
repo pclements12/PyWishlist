@@ -5,7 +5,7 @@ from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMult
 class ItemForm(ModelForm):
 
     # Representing the many to many related field in Pizza
-    groups = ModelMultipleChoiceField(queryset=WishlistGroup.objects.all(), widget=CheckboxSelectMultiple)
+    groups = ModelMultipleChoiceField(queryset=WishlistGroup.objects.all(), widget=CheckboxSelectMultiple, required=False)
 
     # Overriding __init__ here allows us to provide initial
     # data for 'groups' field
@@ -19,6 +19,11 @@ class ItemForm(ModelForm):
             # The widget for a ModelMultipleChoiceField expects
             # a list of primary key for the selected data.
             initial['groups'] = [grp.pk for grp in kwargs['instance'].wishlistgroup_set.all()]
+        if 'group' in kwargs:
+            initial = kwargs.setdefault('initial', {})
+            groups = initial.setdefault('groups', [])
+            groups.append(kwargs['group'].pk)
+            del kwargs['group']
 
         ModelForm.__init__(self, *args, **kwargs)
 

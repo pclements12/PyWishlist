@@ -40,16 +40,33 @@ def create(request, group_id):
                            "group": group})
         item = item_form.save(commit=False)
         item.wisher = request.user
-        item = item.save()
-        group_item = GroupItem(item=item, group=group)
-        group_item.save()
+        item.save()
+        item_form.save_m2m()
         print "creating a new item %s" % item
+        print "redirecting to the group home page"
         return redirect("group_home", group.id)
     else:
-        item_form = ItemForm()
+        item_form = ItemForm(group=group)
         return render(request, 'wishlist_app/item/new_item.html',
                       {'item_form': item_form,
                        "group": group})
+
+
+@login_required
+@require_GET
+def read(request, group_id, item_id):
+    print "looking for item %s" % item_id
+    item = get_object_or_404(Item, pk=item_id)
+    group = get_object_or_404(WishlistGroup, pk=group_id)
+    print "got item %s" % item
+    context = {
+        "group": group,
+        "item": item,
+        "action_url": "item_comment",
+        "action_id": item.id
+    }
+    return render(request, "wishlist_app/item/item.html", context)
+
 
 @login_required
 @require_POST

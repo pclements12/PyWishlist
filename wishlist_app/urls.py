@@ -29,7 +29,8 @@ urlpatterns = [
     url(r'^item/(?P<item_id>[0-9]+)/delete/?$', item.delete, name="item_delete"),
 
     # group item operations (from a group)
-    # need a group create url so that a group can be defaulted...
+    url(r'^group/(?P<group_id>[0-9]+)/item/$', group_item.create, name="group_item_create"),
+    url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/?$', item.read, name="group_item_read"),
     url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/claim/?$',
         group_item.claim, name="group_item_claim"),
     url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/unclaim/?$',

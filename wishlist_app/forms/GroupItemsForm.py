@@ -33,12 +33,6 @@ class GroupItemsForm(ModelForm):
     def save(self, commit=True):
         # Get the saved Group instance
         group = ModelForm.save(self, True)
-
-        # Prepare a 'save_m2m' method for the form,
-
-        # self.save_m2m()
-        # This is where we actually link the item with groups
-
         GroupItem.objects.filter(group=group).delete()
 
         group_items = []

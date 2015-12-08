@@ -4,7 +4,11 @@
 {% endblock%}
 {% block body %}
     <h4>New item for my wishlist</h4>
+    {% if group %}
+    <form method="post" action="{% url 'group_item_create' group.id %}">
+    {% else %}
     <form method="post" action="{% url 'item_create'%}">
+    {% endif %}
         {% csrf_token %}
         {% load bootstrap3 %}
         {% bootstrap_form item_form %}
