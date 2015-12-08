@@ -205,17 +205,10 @@ class Item(models.Model):
         self.save()
 
     def check_claim(self, user):
-        if self.giver is not None:
+        if self.giver is not None and self.claimed:
             raise PermissionDenied("Item has already been claimed")
         if user == self.wisher:
             raise PermissionDenied("User's can't claim their own items")
-        assignment = self.group.get_assignment(user)
-        if self.group.is_secret_santa():
-            if assignment.wisher != self.wisher:
-                raise PermissionDenied("User must be the wisher's secret santa to claim their items")
-        elif self.group.is_registry():
-            if self.wisher != assignment.wisher:
-                raise PermissionDenied("Can only claim items of the registry's target user")
 
     def __str__(self):
         if self.giver is None:
