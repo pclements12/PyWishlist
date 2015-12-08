@@ -3,24 +3,56 @@
     <title>{{ group.name }}</title>
 {% endblock%}
 {% block body %}
-    <h4>Add items to {{ group.name }}</h4>
-    <form method="post" action="{% url 'group_items' group.id %}">
-        {% csrf_token %}
-        {% load bootstrap3 %}
-        {% bootstrap_form form %}
-{#        {% for field in form %}#}
-{#            <div class="fieldWrapper">#}
-{#                {{ field.errors }}#}
-{#                {{ field.label_tag }} {{ field }}#}
-{#                {% if field.help_text %}#}
-{#                <p class="help">{{ field.help_text|safe }}</p>#}
-{#                {% endif %}#}
-{#            </div>#}
-{#        {% endfor %}#}
-        {% buttons %}
-            <button type="submit" class="btn btn-primary">
-              <i class="fa fa-save"></i> Save
-            </button>
-        {% endbuttons %}
-    </form>
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Add items to {{ group.name }}
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <div>
+                        <label id="label_all_none"><input checked="checked" id="cb_all_none" title="select all or none" type="checkbox"><span>Select All</span></label>
+                        <button class="btn btn-default btn-lg btn-block" id="reset_items">Reset</button>
+                    </div>
+                </div>
+                <form id="item_list_form" method="post" action="{% url 'group_items' group.id %}">
+                    {% csrf_token %}
+                    {% load bootstrap3 %}
+                    {% bootstrap_form form %}
+                    {% buttons %}
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">
+                          <i class="fa fa-save"></i> Save
+                        </button>
+                    {% endbuttons %}
+                </form>
+                <script type="text/javascript">
+                    (function(){
+                        var labels = {
+                            all: "Select All",
+                            none: "Select None"
+                        };
+                        var $label = $("#label_all_none span");
+                        var initial = [];
+                        $(function(){
+                            $("#cb_all_none").on("change", selection);
+                            $("#item_list_form").find("input[type=checkbox]").each(function(i, el){
+                                initial.push($(el).is(":checked"));
+                            });
+                            $("#reset_items").on("click", reset);
+                        });
+                        function selection(ev){
+                            var selected = $(ev.target).is(":checked");
+                            $("#item_list_form").find("input[type=checkbox]").prop("checked", selected);
+                            selected ? $label.text(labels.none) : $label.text(labels.all);
+                        }
+                        function reset(ev){
+                            $("#item_list_form").find("input[type=checkbox]").each(function(i, el){
+                                $(el).prop("checked", initial[i]);
+                            });
+                        }
+                    }());
+                </script>
+            </div>
+        </div>
+    </div>
 {% endblock %}

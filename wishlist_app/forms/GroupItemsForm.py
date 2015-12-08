@@ -26,7 +26,7 @@ class GroupItemsForm(ModelForm):
         self.user = kwargs.pop("user", None)
         if self.user is None:
             raise ValidationError("User must be supplied to the GroupItemsForm")
-        if 'instance' in kwargs and 'user' in kwargs:
+        if 'instance' in kwargs:
             # need to set initial as the items already in the group
             initial['items'] = [grpi.item.pk for grpi in
                                 GroupItem.objects.filter(group=kwargs['instance'],
