@@ -1,5 +1,5 @@
 <td>
-    <a class="text-left name" href="{% url 'group_item_read' group.id item.id %}">
+    <a class="text-left name" href="{% url 'item_read' item.id %}">
         <i class="fa fa-gift fa-fw"></i><span class="name"> {{ item.name }}</span>
     </a>
 </td>
@@ -14,23 +14,22 @@
     </a>
 </td>
 {% if item.giver %}
-{#<td>#}
-{# TODO what do to about giver fields with indie items? #}
-{#    <a class="text-left giver" href="{% url 'user_wishlist' group.id item.giver.id %}">#}
-{#        <i class="fa fa-user fa-fw"></i><span class="giver"> {{ item.giver.username }}</span>#}
-{#    </a>#}
-{#</td>#}
+<td>
+    <a class="text-left giver" href="{% url 'user_wishlist' group.id item.giver.id %}">
+        <i class="fa fa-user fa-fw"></i><span class="giver"> {{ item.giver.username }}</span>
+    </a>
+</td>
 {% endif %}
 {% if not item.claimed %}
 <td>
-    <a class="text-left claim" data-url="{% url 'group_item_claim' group.id item.id %}" href="#claim">
+    <a class="text-left claim" data-url="{% url 'item_claim' item.id %}" href="#claim">
         <i class="fa fa-gift fa-fw"></i> Claim
     </a>
 </td>
 {% endif %}
 {% if item.claimed and request.user == item.giver %}
 <td>
-    <a class="text-left unclaim" data-url="{% url 'group_item_unclaim' group.id item.id %}" href="#unclaim">
+    <a class="text-left unclaim" data-url="{% url 'item_unclaim' item.id %}" href="#unclaim">
         <i class="fa fa-gift fa-fw"></i> Unclaim
     </a>
 </td>

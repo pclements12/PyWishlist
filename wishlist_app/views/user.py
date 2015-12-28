@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.core import urlresolvers
 from django.core.mail import send_mail
 from datetime import datetime
-from wishlist_app.models import User, WishlistGroup, Invite
+from wishlist_app.models import User, WishlistGroup, Invite, Item
 from wishlist_app.forms.LongRegistrationForm import LongRegistrationForm
 from wishlist_app.forms.UserUpdateForm import UserUpdateForm
 
@@ -29,6 +29,12 @@ def do_search(name):
     print "searching for user by username..."
     users = User.objects.filter(username__icontains=name).order_by('username')
     return users | emails
+
+
+@login_required
+def wishlist(request):
+    items = Item.objects.filter(wisher=request.user).order_by('name')
+    return render (request, "wishlist_app/item/my_wishlist.html", {"items": items})
 
 
 @login_required

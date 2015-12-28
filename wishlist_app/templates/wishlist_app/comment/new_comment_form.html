@@ -1,5 +1,5 @@
 {# Expects item, comment_form as input #}
-<form action="{% url 'item_comment' item.id %}" method="post">
+<form action="{% url 'item_comment' group.id item.id %}" method="post">
     {% csrf_token %}
     {% load bootstrap3 %}
     {% bootstrap_form comment_form %}

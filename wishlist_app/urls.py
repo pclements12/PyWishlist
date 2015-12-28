@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from .views import item, operations, group, user, member, comment
+from .views import item, group_item, operations, group, user, member, comment
 
 urlpatterns = [
     # url(r'^accounts/login/$', operations.user_login, name="login"),
@@ -21,18 +21,28 @@ urlpatterns = [
     url(r'^group/(?P<group_id>[0-9]+)/add/(?P<user_id>[0-9]+)$', member.add, name="add_user"),
     url(r'^group/member/remove/(?P<member_id>[0-9]+)$', member.delete, name="remove_user"),
 
-    # wishlist item operations
-    url(r'^(?P<group_id>[0-9]+)/item/$', item.create, name="item_create"),
+    # item operations (from personal wishlist)
+    url(r'^user/wishlist$', user.wishlist, name="my_wishlist"),
+    url(r'^item/$', item.create, name="item_create"),
     url(r'^item/(?P<item_id>[0-9]+)/?$', item.read, name="item_read"),
     url(r'^item/(?P<item_id>[0-9]+)/edit/?$', item.update, name="item_update"),
     url(r'^item/(?P<item_id>[0-9]+)/delete/?$', item.delete, name="item_delete"),
-    url(r'^item/(?P<item_id>[0-9]+)/claim/?$', item.claim, name="item_claim"),
-    url(r'^item/(?P<item_id>[0-9]+)/unclaim/?$', item.unclaim, name="item_unclaim"),
-    url(r'^item/(?P<item_id>[0-9]+)/comment$', item.comment, name="item_comment"),
-    url(r'^item/comment/(?P<comment_id>[0-9]+)/edit$', item.edit_comment, name="item_comment_edit"),
+
+    # group item operations (from a group)
+    url(r'^group/(?P<group_id>[0-9]+)/item/$', group_item.create, name="group_item_create"),
+    url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/?$', group_item.read, name="group_item_read"),
+    url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/claim/?$',
+        group_item.claim, name="group_item_claim"),
+    url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/unclaim/?$',
+        group_item.unclaim, name="group_item_unclaim"),
+    url(r'^group/(?P<group_id>[0-9]+)/items/', group_item.list, name='group_items'),
 
     # comment
     url(r'^comment/(?P<comment_id>[0-9]+)/delete', comment.delete, name="comment_delete"),
+    url(r'^group/(?P<group_id>[0-9]+)/item/(?P<item_id>[0-9]+)/comment$',
+        group_item.comment, name="item_comment"),
+    url(r'^comment/(?P<comment_id>[0-9]+)/edit$',
+        group_item.edit_comment, name="item_comment_edit"),
 
     # user
     url(r'^user$', user.profile, name="user_profile"),

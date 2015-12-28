@@ -3,8 +3,8 @@
     <title>{{ item.name }}</title>
 {% endblock%}
 {% block body %}
-      <h4>Update item</h4>
-    <form method="post" action="{% url 'item_update' item.id %}">
+    <h4>New item for my wishlist</h4>
+    <form method="post" action="{% url 'item_create' group.id %}">
         {% csrf_token %}
         {% load bootstrap3 %}
         {% bootstrap_form item_form %}
