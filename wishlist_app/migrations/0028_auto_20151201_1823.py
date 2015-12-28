@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from wishlist_app.models import GroupItem, Item, ItemComment
+from wishlist_app.models import GroupItem, ItemComment
 
 
 def data_migration(apps, schema_editor):
@@ -11,7 +11,9 @@ def data_migration(apps, schema_editor):
     # collect item comments
     #   match item comments to group_items (nulling item as we map to group_item)
 
-    for item in Item.objects.all():
+    ItemOld = apps.get_model('wishlist_app', 'Item')
+
+    for item in ItemOld.objects.all():
         print "Migrating item %s, in group %s" % (item, item.group)
         group_item = GroupItem(item=item, group=item.group)
         group_item.save()
