@@ -51,8 +51,11 @@
             </div>
 
             <div class="panel-footer">
-                <a class="btn btn-lg btn-success btn-block" href="{% url 'item_create' group.id %}">
-                    <i class="fa fa-gift"></i> Make a wish</a>
+                <a class="btn btn-lg btn-success btn-block" href="{% url 'group_item_create' group.id %}">
+                    <i class="fa fa-gift"></i> Make a new wish</a>
+                <a class="btn btn-lg btn-default btn-block" href="{% url 'group_items' group.id %}">
+                    <i class="fa fa-plus"></i> Add from my wishlist</a>
+                </a>
             </div>
         </div>
     </div>

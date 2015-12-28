@@ -2,7 +2,7 @@ from wishlist_app.forms.GroupForm import GroupForm
 from wishlist_app.forms.RegistryForm import RegistryForm
 from wishlist_app.forms.SecretSantaForm import SecretSantaFormSet
 from django.shortcuts import render, get_object_or_404, redirect
-from wishlist_app.models import GroupMember, WishlistGroup, Item, User, SecretSantaAssignment, RegistryAssignment
+from wishlist_app.models import GroupMember, WishlistGroup, Item, GroupItem, User, SecretSantaAssignment, RegistryAssignment
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
 from django.core.exceptions import PermissionDenied
@@ -27,8 +27,8 @@ def home(request, group_id):
     items = get_group_filtered_items(request.user, group)
 
     context = {
-        "wishes": Item.objects.filter(group=group, wisher=request.user).order_by("name"),
-        "gives": Item.objects.filter(group=group, giver=request.user).order_by("name"),
+        "wishes": group.items.filter(wisher=request.user).order_by("name"),
+        "gives": group.items.filter(giver=request.user).order_by("name"),
         "group": group,
         "members": group.members(),
         "assignment": group.get_assignment(request.user),
@@ -209,8 +209,8 @@ def _post_secret_santa_assignments(request, group):
 
 def get_group_filtered_items(user, group):
     assignment = group.get_assignment(user)
-    available = Item.objects.filter(group=group, claimed=False).exclude(wisher=user)
-    claimed = Item.objects.filter(group=group, claimed=True).exclude(wisher=user)
+    available = group.items.filter(claimed=False).exclude(wisher=user)
+    claimed = group.items.filter(claimed=True).exclude(wisher=user)
 
     # if group.is_secret_santa():
     #     if assignment is not None:

@@ -8,28 +8,19 @@ import uuid
 import bleach
 
 
-# Create your models here.
-# Base module
-
-
 class DBObject(models.Model):
     created_date = models.DateTimeField(default=datetime.now)
     modified_date = models.DateTimeField(default=datetime.now)
-    created_by = models.ForeignKey(User, related_name='%(class)s_created_by', default=None, blank=True, null=True)
-    modified_by = models.ForeignKey(User, related_name='%(class)s_modified_by', default=None, blank=True, null=True)
 
     class Meta:
         abstract = True
 
 
-# Do we extend user to have some custom attributes? like display name, maybe an avatar?
-
-
-class Role(DBObject):
-    # wishlist group
-    # user
-    # role (admin, member)
-    pass
+def follow_through(queryset, field):
+    items = []
+    for item in queryset.all():
+        items.append(getattr(item, field))
+    return items
 
 
 def full_name_display(self):
@@ -42,9 +33,68 @@ def full_name_display(self):
         return "(%s)" % self.get_full_name()
     return ""
 
-
+# user methods
 # monkey patch in a display method for user names
 User.get_full_name_display = full_name_display
+
+
+def get_user_groups(self):
+    members = GroupMember.objects.filter(user=self).prefetch_related("group")
+    return follow_through(members, "group")
+
+User.get_group_list = get_user_groups
+
+
+class Item(models.Model):
+    name = models.CharField(max_length=100, null=False, blank=False)
+    description = models.TextField(default=None, null=True, blank=True)
+    link = models.URLField(default=None, null=True, blank=True)
+    quantity = models.IntegerField(default=1, null=True, blank=True)
+    wisher = models.ForeignKey(User, related_name="wishlist_wisher")
+    giver = models.ForeignKey(User, related_name="wishlist_giver", default=None, blank=True, null=True)
+    claimed = models.BooleanField(default=False)
+
+    groups = models.ManyToManyField('WishlistGroup', through='GroupItem')
+
+    def claim(self, user):
+        self.giver = user
+        self.claimed = True
+        self.save()
+
+    def unclaim(self):
+        self.giver = None
+        self.claimed = False
+        self.save()
+
+    def check_claim(self, user):
+        if self.giver is not None:
+            print "Item has already been claimed"
+            raise PermissionDenied("Item has already been claimed")
+        if user == self.wisher:
+            print "Can't claim own item"
+            raise PermissionDenied("User's can't claim their own items")
+        # check if item is in a group that the user belongs to
+
+        user_in_group = False
+        user_groups = user.get_group_list()
+        for grp in self.groups.all():
+            print "Item group %s" % grp.id
+            for user_grp in user_groups:
+                print "User group %s" % user_grp.id
+                if grp.id == user_grp.id:
+                    print "User and item group match"
+                    user_in_group = True
+                    break
+            if user_in_group:
+                break
+        if not user_in_group:
+            print "User is not in a group with this item"
+            raise PermissionDenied("User is not in a group that this item belongs to")
+
+    def __str__(self):
+        if self.giver is None:
+            return "%s (%s)" % (self.name, self.wisher.username)
+        return "%s (%s<-%s)" % (self.name, self.wisher.username, self.giver.username)
 
 
 class WishlistGroup(models.Model):
@@ -59,6 +109,8 @@ class WishlistGroup(models.Model):
     REGISTRY = "registry"
     GROUP_TYPES = ((REGULAR, "Individual Wishlists"), (SECRET_SANTA, "Secret Santa"), (REGISTRY, 'Registry/Birthday'))
     type = models.CharField(max_length=30, choices=GROUP_TYPES, default=REGULAR)
+
+    items = models.ManyToManyField(Item, through='GroupItem')
 
     @staticmethod
     def get_groups_by_user(user):
@@ -183,44 +235,6 @@ class Comment(models.Model):
         return bleach.clean(replaced, tags=self.allowed_tags, attributes=self.allowed_attrs, strip=True)
 
 
-class Item(models.Model):
-    name = models.CharField(max_length=100, null=False, blank=False)
-    description = models.TextField(default=None, null=True, blank=True)
-    link = models.URLField(default=None, null=True, blank=True)
-    quantity = models.IntegerField(default=1, null=True, blank=True)
-    group = models.ForeignKey(WishlistGroup, related_name="wishlist_group", on_delete=models.CASCADE)
-    wisher = models.ForeignKey(User, related_name="wishlist_wisher")
-    giver = models.ForeignKey(User, related_name="wishlist_giver", default=None, blank=True, null=True)
-    claimed = models.BooleanField(default=False)
-    comments = models.ManyToManyField(Comment, through="ItemComment")
-
-    def claim(self, user):
-        self.giver = user
-        self.claimed = True
-        self.save()
-
-    def unclaim(self):
-        self.giver = None
-        self.claimed = False
-        self.save()
-
-    def check_claim(self, user):
-        if self.giver is not None and self.claimed:
-            raise PermissionDenied("Item has already been claimed")
-        if user == self.wisher:
-            raise PermissionDenied("User's can't claim their own items")
-
-    def __str__(self):
-        if self.giver is None:
-            return "%s (%s)" % (self.name, self.wisher.username)
-        return "%s (%s<-%s)" % (self.name, self.wisher.username, self.giver.username)
-
-
-class ItemComment(models.Model):
-    item = models.ForeignKey(Item, related_name="itemcomment_item", null=False)
-    comment = models.ForeignKey(Comment, related_name="itemcomment_comment")
-
-
 class GroupComment(models.Model):
     group = models.ForeignKey(WishlistGroup, related_name="groupcomment_group", null=False)
     comment = models.ForeignKey(WishlistGroup, related_name="groupcomment_comment", null=False)
@@ -235,6 +249,20 @@ class GroupMember(models.Model):
 
     def __str__(self):
         return "%s:%s" % (self.group, self.user)
+
+
+class GroupItem(models.Model):
+    group = models.ForeignKey(WishlistGroup, related_name="group_item_wishlistgroup", on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, related_name="group_item_item", on_delete=models.CASCADE)
+    comments = models.ManyToManyField(Comment, through="ItemComment")
+
+    def __str__(self):
+        return "%s:%s" % (self.group, self.item)
+
+
+class ItemComment(models.Model):
+    group_item = models.ForeignKey(GroupItem, related_name="itemcomment_group_item")
+    comment = models.ForeignKey(Comment, related_name="itemcomment_comment")
 
 
 def generate_uuid():
@@ -274,4 +302,3 @@ class RegistryAssignment(models.Model):
 
     class Meta:
         unique_together = ("group", "wisher")
-
