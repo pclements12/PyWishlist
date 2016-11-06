@@ -4,7 +4,12 @@
 {% endblock%}
 {% block body %}
     <h4>Update Group</h4>
-    <form method="post" action="{% url 'group_update' group.id %}">
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" id="showClone">
+          <i class="fa fa-copy"></i> Clone group
+        </button>
+    </div>
+    <form id="updateForm" method="post" action="{% url 'group_update' group.id %}">
         {% csrf_token %}
         {% load bootstrap3 %}
         {% bootstrap_form group_form %}
@@ -14,4 +19,29 @@
             </button>
         {% endbuttons %}
     </form>
+    <script type="text/javascript">
+        $(function(){
+            $("#showClone").click(function(){
+                $("#updateForm").toggle();
+                $("#cloneForm").toggle();
+            })
+        })
+    </script>
+    <div id="cloneForm" class="panel panel-primary" style="display:none">
+        <div class="panel-body">
+            <form method="post" action ="{% url 'group_clone' group.id %}">
+                {% csrf_token %}
+                {% load bootstrap3 %}
+                <div class="form-group">
+                    <label class="control-label" for="id_new_name">New name</label>
+                    <input class="form-control" id="id_new_name" name="name" placeholder="New group name">
+                </div>
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fa fa-plus-circle"></i> Create new group
+                    </button>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
 {% endblock %}

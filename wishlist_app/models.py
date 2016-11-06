@@ -140,11 +140,19 @@ class WishlistGroup(models.Model):
     def add_user(self, user):
         return GroupMember.objects.create(user=user, group=self)
 
-    def clone_group(self, name):
+    def clone(self, name):
         new_group = WishlistGroup.objects.get(pk=self.pk)
         new_group.pk = None
         new_group.name = name
+        new_group.description = None
+        new_group.end_date = None
+        new_group.type = self.type
         new_group.save()
+
+        for member in self.members():
+            new_group.add_user(member.user)
+
+        return new_group
 
     def remove_user(self, user):
         print "removing user from group %s" % user
