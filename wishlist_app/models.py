@@ -141,12 +141,6 @@ class WishlistGroup(models.Model):
         return GroupMember.objects.create(user=user, group=self)
 
     def remove_user(self, user):
-        if self.contains_user(user):
-            GroupMember.objects.get(user=user, group=self).delete()
-        else:
-            raise PermissionDenied("User isn't a member of the group")
-
-    def remove_user(self, user):
         print "removing user from group %s" % user
         GroupMember.objects.get(user=user, group=self).delete()
         items = Item.objects.filter(wisher=user, group=self)
