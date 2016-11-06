@@ -68,7 +68,7 @@ def read(request, group_id, item_id):
         "action_url": "item_comment",
         "action_id": item.id
     }
-    return render(request, "wishlist_app/item/item.html", context)
+    return render(request, "wishlist_app/group_item/item.html", context)
 
 
 @login_required

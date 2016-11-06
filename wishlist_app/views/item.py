@@ -90,7 +90,7 @@ def delete(request, item_id):
         print "user is not allowed to delete this item"
         raise PermissionDenied("Only the wisher can delete an item")
     print "got item %s" % item
-    item.delete()
+    item.remove()
     return redirect("my_wishlist")
 
 
