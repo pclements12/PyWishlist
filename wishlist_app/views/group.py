@@ -5,8 +5,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from wishlist_app.models import GroupMember, WishlistGroup, Item, GroupItem, User, SecretSantaAssignment, RegistryAssignment
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, Http404
+from django.core.exceptions import PermissionDenied, FieldError, ValidationError
+from django.http import HttpResponse, Http404, HttpResponseBadRequest
 
 
 def get_home_template(group):
@@ -86,6 +86,18 @@ def update(request, group_id):
 def add_members(request, group_id):
     group = get_object_or_404(WishlistGroup, pk=group_id)
     return render(request, 'wishlist_app/members/add_members.html', {'group': group})
+
+
+@login_required
+@require_POST
+def clone(request, group_id):
+    print "cloning group %s" % group_id
+    group = get_object_or_404(WishlistGroup, pk=group_id)
+    if request.POST['name'] is None:
+       raise ValidationError("Name must be specified")
+    name = request.POST['name']
+    new_group = group.clone(name)
+    return redirect("group_home", new_group.id)
 
 
 @login_required
