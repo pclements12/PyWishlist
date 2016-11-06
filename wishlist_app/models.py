@@ -142,17 +142,22 @@ class WishlistGroup(models.Model):
 
     def remove_user(self, user):
         print "removing user from group %s" % user
-        GroupMember.objects.get(user=user, group=self).delete()
-        items = Item.objects.filter(wisher=user, group=self)
+        if not self.contains_user(user):
+            raise PermissionDenied("User isn't a member of the group")
+
+        items = GroupItem.objects.filter(item__wisher=user, group=self)
         print "deleting user's items from the group"
-        for i in items:
-            print "delete item %s" % i
-            i.delete()
+        for gi in items:
+            print "delete item %s" % gi
+            gi.delete()
         print "unclaim items for user"
-        items = Item.objects.filter(giver=user)
-        for i in items:
-            print "unclaiming item %s" % i
-            i.unclaim()
+        # what if a giver is in multiple groups with them?
+        group_items = GroupItem.objects.filter(group=self, item__giver=user)
+        for gi in group_items:
+            print "unclaiming item %s" % gi
+            gi.item.unclaim()
+        GroupMember.objects.get(user=user, group=self).delete()
+        print "user successfully removed from group"
 
     def contains_user(self, user):
         for member in self.members():

@@ -33,7 +33,7 @@ def create(request, group_id):
     print "Wisher: %s" % request.user
     if request.POST:
         print "posted values %s" % request.POST
-        item_form = ItemForm(request.POST)
+        item_form = ItemForm(request.POST, user=request.user)
         if not item_form.is_valid():
             return render(request, 'wishlist_app/item/new_item.html',
                           {'item_form': item_form,
@@ -46,7 +46,7 @@ def create(request, group_id):
         print "redirecting to the group home page"
         return redirect("group_home", group.id)
     else:
-        item_form = ItemForm(group=group)
+        item_form = ItemForm(group=group, user=request.user)
         return render(request, 'wishlist_app/item/new_item.html',
                       {'item_form': item_form,
                        "group": group})
