@@ -144,7 +144,7 @@ def comment(request, group_id, item_id):
         form.add_error("hide_from_wisher", ValidationError("Can't hide comments from yourself"))
         return render(request, "wishlist_app/item/item.html", {
             "item": item,
-            "comments": item.comments.order_by('created'),
+            "comments": group_item.comments.order_by('created'),
             "comment_form": form
         })
     c.save()

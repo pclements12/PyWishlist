@@ -4,7 +4,7 @@ from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMult
 
 class ItemForm(ModelForm):
 
-    # Representing the many to many related field in Pizza
+    # Representing the many to many related field in item groups
     groups = ModelMultipleChoiceField(queryset=WishlistGroup.objects.all(), widget=CheckboxSelectMultiple, required=False)
 
     # Overriding __init__ here allows us to provide initial
@@ -25,7 +25,9 @@ class ItemForm(ModelForm):
             groups.append(kwargs['group'].pk)
             del kwargs['group']
 
+        user = kwargs.pop('user')
         ModelForm.__init__(self, *args, **kwargs)
+        self.fields['groups'].queryset = WishlistGroup.get_groups_by_user(user=user)
 
     # Overriding save allows us to process the value of 'groups' field
     def save(self, commit=True):

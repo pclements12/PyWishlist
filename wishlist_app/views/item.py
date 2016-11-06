@@ -14,7 +14,7 @@ def create(request):
     print "Wisher: %s" % request.user
     if request.POST:
         print "posted values %s" % request.POST
-        item_form = ItemForm(request.POST)
+        item_form = ItemForm(request.POST, user=request.user)
         if not item_form.is_valid():
             return render(request, 'wishlist_app/item/new_item.html',
                           {'item_form': item_form})
@@ -25,7 +25,7 @@ def create(request):
         print "creating a new item %s" % item
         return redirect("my_wishlist")
     else:
-        item_form = ItemForm()
+        item_form = ItemForm(user=request.user)
         return render(request, 'wishlist_app/item/new_item.html',
                       {'item_form': item_form})
 
@@ -57,7 +57,7 @@ def update(request, item_id):
     print "Update item: %s" % item
     if request.POST:
         print "posted values %s" % request.POST
-        item_form = ItemForm(request.POST, instance=item)
+        item_form = ItemForm(request.POST, instance=item, user=request.user)
         if not item_form.is_valid():
             return render(request, 'wishlist_app/item/update_item.html',
                           {'item_form': item_form,
@@ -73,7 +73,7 @@ def update(request, item_id):
         print "update item %s" % saved_item
         return redirect("item_read", item.id)
     else:
-        item_form = ItemForm(instance=item)
+        item_form = ItemForm(instance=item, user=request.user)
         return render(request, 'wishlist_app/item/update_item.html',
                       {'item_form': item_form,
                        'item': item,
