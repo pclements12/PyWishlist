@@ -94,8 +94,15 @@ class Item(models.Model):
     def remove(self):
         # need to delete item comments before we can delete the item
         # Item -> GroupItem -> ItemComment -> Comment
+        print "deleting item %s" % self.id
         group_items = GroupItem.objects.filter(item=self)
+        print "found %s group items" % len(group_items)
         for i in group_items:
+            comments = ItemComment.objects.filter(group_item=i)
+            print "found %s comments" % len(comments)
+            for c in comments:
+                print "deleting comment %s" % c
+                c.delete()
             i.delete()
         self.delete()
 
