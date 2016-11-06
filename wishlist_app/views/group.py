@@ -97,7 +97,10 @@ def delete(request, group_id):
         print "user is not allowed to delete this group"
         raise PermissionDenied("Only the creator can delete a group")
     print "got group %s" % group
-    group.delete()
+    try:
+        group.remove_group()
+    except Exception as e:
+        print "couldn't delete group %s" % e
     print "Successfully deleted group"
     return redirect("wishlists")
 
