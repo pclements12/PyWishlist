@@ -91,6 +91,14 @@ class Item(models.Model):
             print "User is not in a group with this item"
             raise PermissionDenied("User is not in a group that this item belongs to")
 
+    def remove(self):
+        # need to delete item comments before we can delete the item
+        # Item -> GroupItem -> ItemComment -> Comment
+        group_items = GroupItem.objects.filter(item=self)
+        for i in group_items:
+            i.delete()
+        self.delete()
+
     def __str__(self):
         if self.giver is None:
             return "%s (%s)" % (self.name, self.wisher.username)
@@ -264,6 +272,8 @@ class ItemComment(models.Model):
     group_item = models.ForeignKey(GroupItem, related_name="itemcomment_group_item")
     comment = models.ForeignKey(Comment, related_name="itemcomment_comment")
 
+    def __str__(self):
+        return "%s:%s" % (self.group_item, self.comment)
 
 def generate_uuid():
     return uuid.uuid1()

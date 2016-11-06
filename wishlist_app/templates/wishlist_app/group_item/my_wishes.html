@@ -1,6 +1,6 @@
 {% if items %}
     {% for item in items %}
-        <a class="list-group-item" href="{% url 'item_read' item.id %}"><i class="fa fa-gift fa-fw"></i>{{ item.name }}
+        <a class="list-group-item" href="{% url 'group_item_read' group.id item.id %}"><i class="fa fa-gift fa-fw"></i>{{ item.name }}
            {% if item.quantity > 1 %}
             <span class="text-muted small badge"><em>{{ item.quantity }}</em>
             </span>
