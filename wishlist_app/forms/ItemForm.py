@@ -32,14 +32,12 @@ class ItemForm(ModelForm):
     # Overriding save allows us to process the value of 'groups' field
     def save(self, commit=True):
         # Get the unsaved Item instance
-        print "ItemForm creating unsaved item"
         instance = ModelForm.save(self, False)
 
         # Prepare a 'save_m2m' method for the form,
         old_save_m2m = self.save_m2m
 
         def new_save_m2m():
-            print "ItemForm saving group mappings"
             old_save_m2m()
             # This is where we actually link the item with groups
             instance.wishlistgroup_set.clear()
