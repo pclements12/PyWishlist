@@ -34,15 +34,20 @@ def create(request, group_id):
     if request.POST:
         print "posted values %s" % request.POST
         item_form = ItemForm(request.POST, user=request.user)
+        print "load item form %s" % item_form
         if not item_form.is_valid():
+            print "form is invalid"
             return render(request, 'wishlist_app/item/new_item.html',
                           {'item_form': item_form,
                            "group": group})
+        print "form is valid"
         item = item_form.save(commit=False)
+        print "create uncommited item"
         item.wisher = request.user
         item.save()
+        print "item saved, creating group item relations"
         item_form.save_m2m()
-        print "creating a new item %s" % item
+        print "created a new item %s" % item
         print "redirecting to the group home page"
         return redirect("group_home", group.id)
     else:

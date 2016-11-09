@@ -57,17 +57,22 @@ def update(request, item_id):
     print "Update item: %s" % item
     if request.POST:
         print "posted values %s" % request.POST
+        print "creating item form %s, %s" % (item, request.user)
         item_form = ItemForm(request.POST, instance=item, user=request.user)
         if not item_form.is_valid():
+            print "form is not valid"
             return render(request, 'wishlist_app/item/update_item.html',
                           {'item_form': item_form,
                            'item': item,
                            # 'assignment': assignment
                            })
+        print "form is valid"
         u_item = item_form.save(commit=False)
+        print "unsaved item created %s" % u_item
         if int(u_item.quantity) < 1:
             print "item quantity less than 1, defaulting to 1"
             u_item.quantity = 1
+        print "saving item"
         saved_item = item_form.save()
         item_form.save_m2m()
         print "update item %s" % saved_item
