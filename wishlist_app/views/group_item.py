@@ -43,8 +43,12 @@ def create(request, group_id):
         print "form is valid"
         item = item_form.save(commit=False)
         print "create uncommited item"
-        item.wisher = request.user
-        item.save()
+        try:
+            item.wisher = request.user
+            item.save()
+        except Exception as e:
+            print "item save failed %s" % e
+            return ValidationError(e)
         print "item saved, creating group item relations"
         item_form.save_m2m()
         print "created a new item %s" % item
