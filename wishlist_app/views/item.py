@@ -65,7 +65,7 @@ def update(request, item_id):
                            # 'assignment': assignment
                            })
         u_item = item_form.save(commit=False)
-        if int(u_item.quantity) < 1:
+        if u_item.quantity is None or int(u_item.quantity) < 1:
             print "item quantity less than 1, defaulting to 1"
             u_item.quantity = 1
         saved_item = item_form.save()
