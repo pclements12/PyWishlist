@@ -92,7 +92,7 @@ EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_PASSWORD = os.environ['SENDGRID_PASSWORD']
-
+DEFAULT_FROM_EMAIL = 'Wishlist App <noreply@buymethings.herokuapp.com>'
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
